@@ -1,0 +1,15 @@
+<div fdCard>
+  <span slot="title">Où se trouve ce pays ?</span>
+  <span slot="meta">{{ revealed() ? name() : 'Disponible après ta réponse' }}</span>
+  @if (revealed()) {
+    <iframe
+      class="app-map"
+      [src]="src()"
+      [title]="'Carte Google Maps : ' + name()"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  } @else {
+    <div class="app-map app-map--waiting" aria-hidden="true"></div>
+  }
+</div>
