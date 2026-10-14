@@ -44,19 +44,25 @@ describe('App', () => {
     const img = el.querySelector<HTMLImageElement>('.app-flag')!;
     expect(img.alt).toBe('Drapeau à deviner');
     expect(el.querySelector('iframe')).toBeNull();
-    expect(el.textContent).not.toContain(quiz.question().country.mnemonic);
     expect(el.textContent).not.toContain(quiz.question().country.funFact);
     expect(el.textContent).not.toContain('Drapeau suivant');
   });
 
-  it('valide une bonne réponse : verdict, mémo, anecdote, carte', async () => {
+  it('n’affiche aucun encart avant la réponse', async () => {
+    const { el } = await setup();
+    expect(el.querySelector('.app-fun-fact')).toBeNull();
+    expect(el.querySelector('.app-map-panel')).toBeNull();
+    expect(el.querySelector('fd-alert')).toBeNull();
+  });
+
+  it('valide une bonne réponse : verdict annoncé, anecdote, carte', async () => {
     const { el, quiz, optionFor, settle } = await setup();
     const { country } = quiz.question();
     optionFor(country.code).click();
     await settle();
 
-    expect(el.querySelector('.app-verdict')!.textContent).toContain('Bravo !');
-    expect(el.querySelector('.app-mnemonic-panel')!.textContent).toContain(country.mnemonic);
+    expect(el.querySelector('.app-status')!.textContent).toContain('Bonne réponse');
+    expect(el.querySelector('fd-alert')).toBeNull();
     expect(el.querySelector('.app-fun-fact')!.textContent).toContain(country.funFact);
     const iframe = el.querySelector<HTMLIFrameElement>('iframe.app-map')!;
     expect(new URL(iframe.src).searchParams.get('q')).toBe(countryName(country.code));
@@ -74,12 +80,12 @@ describe('App', () => {
     wrong.click();
     await settle();
 
-    expect(el.querySelector('.app-verdict')!.textContent).toContain('Raté !');
-    expect(el.querySelector('.app-verdict')!.textContent).toContain(countryName(country.code));
+    expect(el.querySelector('.app-status')!.textContent).toContain('Mauvaise réponse');
+    expect(el.querySelector('.app-status')!.textContent).toContain(countryName(country.code));
     expect(optionFor(country.code).textContent).toContain('bonne réponse');
     expect(wrong.textContent).toContain('incorrecte');
     expect(wrong.className).toContain('fd-button--danger');
-    expect(optionFor(country.code).className).toContain('fd-button--primary');
+    expect(optionFor(country.code).className).toContain('fd-button--success');
     expect(el.querySelector('.app-stats')!.textContent).toContain('Score 0 / 1');
   });
 
@@ -89,6 +95,7 @@ describe('App', () => {
     optionFor(country.code).click();
     await settle();
 
+    expect(optionFor(country.code).className).toContain('fd-button--success');
     const others = options().filter((b) => b !== optionFor(country.code));
     expect(others.every((b) => b.getAttribute('aria-disabled') === 'true')).toBe(true);
     others[0].click();
@@ -97,17 +104,20 @@ describe('App', () => {
     expect(quiz.asked()).toBe(1);
   });
 
-  it('passe au drapeau suivant et recache les indices', async () => {
+  it('passe au drapeau suivant, avec un bouton secondaire, et recache les encarts', async () => {
     const { el, quiz, optionFor, settle } = await setup();
     const first = quiz.question().country.code;
     optionFor(first).click();
     await settle();
-    el.querySelector<HTMLButtonElement>('button.fd-button--lg')!.click();
+    const next = el.querySelector<HTMLButtonElement>('button.fd-button--lg')!;
+    expect(next.className).not.toMatch(/fd-button--(primary|danger|success|ghost)/);
+    next.click();
     await settle();
 
     expect(quiz.question().country.code).not.toBe(first);
     expect(el.querySelector('iframe')).toBeNull();
-    expect(el.querySelector('.app-verdict')!.textContent!.trim()).toBe('');
+    expect(el.querySelector('.app-fun-fact')).toBeNull();
+    expect(el.querySelector('.app-status')!.textContent!.trim()).toBe('');
     expect(el.textContent).not.toContain('Drapeau suivant');
   });
 

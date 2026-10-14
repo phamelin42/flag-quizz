@@ -18,16 +18,17 @@ Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts
 
 ## Structure
 
-- `src/app/data/` : une fiche par pays (`code`, `mnemonic`, `funFact`), un fichier par continent, assemblées dans `countries.ts`. Le nom français vient de `Intl.DisplayNames` (`country-name.ts`). Les drapeaux sont les SVG de `flag-icons`, copiés dans `flags/4x3/` par `angular.json`.
+- `src/app/data/` : une fiche par pays (`code`, `funFact`), un fichier par continent, assemblées dans `countries.ts`. Le nom français vient de `Intl.DisplayNames` (`country-name.ts`). Les drapeaux sont les SVG de `flag-icons`, copiés dans `flags/4x3/` par `angular.json`.
 - `src/app/quiz/quiz.service.ts` : tout l'état de la partie (question, réponse, score, série) en signaux. `COUNTRIES` et `RANDOM` sont des jetons d'injection, remplacés dans les tests pour des tirages reproductibles.
-- Un dossier par composant (`flag-card`, `answer-options`, `mnemonic-panel`, `fun-fact`, `map-panel`) avec `.ts`, `.html`, `.scss`. `app` assemble la page.
+- Un dossier par composant (`flag-card`, `answer-options`, `fun-fact`, `map-panel`) avec `.ts`, `.html`, `.scss`. `app` assemble la page.
 - `e2e/` : Playwright. Google n'est jamais contacté pendant les tests (l'iframe reçoit une page vide).
 
 ## Règles du jeu à ne pas casser
 
-- **Rien ne donne la réponse avant le clic** : mémo, anecdote, carte, nom dans le texte alternatif du drapeau. Après la réponse, tout apparaît.
+- **Rien ne donne la réponse avant le clic** : anecdote, carte, nom dans le texte alternatif du drapeau. L'anecdote et la carte n'existent pas dans le DOM avant la réponse (`@if (quiz.isAnswered())` dans `app.html`), pas même sous forme d'encart vide.
 - Une question ne se répond qu'une fois (`QuizService.choose` ignore le second clic).
-- Le verdict ne repose jamais sur la couleur seule : icône et texte masqué (`fd-sr`) sur la bonne réponse et sur le mauvais choix.
+- Le verdict n'a pas d'encart. La bonne réponse passe en bouton `success` (vert) avec une coche, le mauvais choix en `danger` avec une croix, et un texte masqué (`fd-sr`, `aria-live`) l'annonce : il ne repose jamais sur la couleur seule.
+- « Drapeau suivant » est un bouton secondaire (le style par défaut de Fuda), pas `primary`.
 - Après une réponse, le focus va sur « Drapeau suivant » ; après « suivant », sur la première proposition.
 - L'URL de la carte est construite uniquement depuis `countryName(code)`, jamais depuis une saisie : c'est ce qui justifie `bypassSecurityTrustResourceUrl` dans `map-panel.ts`.
 - Les noms de pays n'ont pas d'article (« Japon », pas « le Japon ») : les phrases sont tournées en conséquence (« La bonne réponse était : Japon »).
@@ -41,14 +42,18 @@ Les mêmes que Fuda. Composants standalone, `OnPush` et zoneless par défaut (on
 - Les boutons Fuda en `aria-disabled="true"` sont grisés par Fuda ; on les utilise pour les propositions écartées plutôt que `disabled`, qui retirerait le focus. Playwright n'attend pas un élément `aria-disabled` : `click({ force: true })` dans les tests.
 - Les surcharges de style d'un composant Fuda doivent être plus spécifiques que lui (`.app-answer-options .app-option`), car l'ordre d'insertion des feuilles dépend du premier rendu.
 
+## Obligatoire sur tout site
+
+- **Une icône d'onglet** (`favicon`) : `public/favicon.svg` (aux couleurs de Fuda), `public/favicon.ico` (16, 32 et 48 px) et `public/apple-touch-icon.png` (180 px), déclarés dans `src/index.html`. Un site sans icône d'onglet n'est pas terminé : l'icône par défaut d'Angular n'est pas acceptable. `e2e/quiz.spec.ts` vérifie que les fichiers répondent.
+
 ## Style
 
 Uniquement des custom properties issues des tokens Fuda (couleur, espacement, rayon, police), aucune valeur en dur. Thème Jour par défaut, Nuit par `data-theme="dark"` posé par `FdThemeService` sur choix du joueur ; jamais de `prefers-color-scheme`. Mouvement : celui de Fuda, `prefers-reduced-motion` respecté.
 
 ## Dépendance Fuda
 
-Voir `README.md` : installée depuis git (`prepare` construit la lib). La branche visée est dans `package.json` ; la repointer sur `main` quand elle sera fusionnée. Si une icône ou un composant manque, on l'ajoute dans Fuda, pas ici.
+Voir `README.md` : installée depuis git (`prepare` construit la lib). La branche visée est dans `package.json` ; la repointer sur `main` quand elle sera fusionnée. Si une icône, une variante ou un composant manque, on l'ajoute dans Fuda, pas ici : le bouton `success` (vert) et le token `tokiwa-press` viennent de là.
 
 ## Contenu
 
-Les astuces et anecdotes sont rédigées à la main. Les vérifier avant d'en ajouter : un fait douteux vaut moins qu'une astuce visuelle. `countries.spec.ts` impose 195 pays, des codes uniques, un drapeau et un nom pour chacun.
+Les anecdotes sont rédigées à la main. Les vérifier avant d'en ajouter : un fait douteux ne vaut rien. `countries.spec.ts` impose 195 pays, des codes uniques, un drapeau, un nom et une anecdote pour chacun.

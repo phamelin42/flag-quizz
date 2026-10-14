@@ -38,9 +38,10 @@
   gap: var(--space-6);
   align-items: start;
 }
-/* Le pied de page reste en bas de l'écran : astuce à gauche, carte à droite. */
+/* Le pied de page reste en bas de l'écran : anecdote à gauche, carte à droite. */
 .app-bottom {
   display: grid;
+  animation: fd-fade var(--duration-base) var(--ease-kaze);
   gap: var(--space-6);
   margin-top: auto;
   align-items: start;

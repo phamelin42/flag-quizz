@@ -25,9 +25,8 @@ describe('COUNTRY_LIST', () => {
     expect(missing).toEqual([]);
   });
 
-  it('a un mémo et une anecdote rédigés pour chaque pays', () => {
-    for (const { code, mnemonic, funFact } of COUNTRY_LIST) {
-      expect(mnemonic.trim().length, `mémo de ${code}`).toBeGreaterThan(20);
+  it('a une anecdote rédigée pour chaque pays', () => {
+    for (const { code, funFact } of COUNTRY_LIST) {
       expect(funFact.trim().length, `anecdote de ${code}`).toBeGreaterThan(20);
     }
   });

@@ -6,8 +6,8 @@ import { countryName } from '../data/country-name';
 import { mapUrl } from './map-url';
 
 /**
- * Cadre en bas à droite : le pays sur Google Maps, une fois la question répondue.
- * L'iframe n'existe pas avant : on ne contacte pas Google, et la carte ne donne pas la réponse.
+ * Cadre en bas à droite : le pays sur Google Maps. Le parent ne l'affiche qu'une fois la question
+ * répondue : l'iframe n'existe pas avant, donc on ne contacte pas Google et la carte ne donne pas la réponse.
  */
 @Component({
   selector: 'app-map-panel',
@@ -19,7 +19,6 @@ import { mapUrl } from './map-url';
 })
 export class MapPanel {
   readonly country = input.required<Country>();
-  readonly revealed = input(false);
 
   private readonly sanitizer = inject(DomSanitizer);
 
