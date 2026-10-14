@@ -2,8 +2,6 @@
 export interface Country {
   /** Code ISO 3166-1 alpha-2 en minuscules, aussi le nom du fichier de drapeau (`flags/4x3/fr.svg`). */
   readonly code: string;
-  /** Un moyen concret de reconnaître le drapeau, sans citer le nom du pays de façon évidente. */
-  readonly mnemonic: string;
   /** Une anecdote ou un bout d'histoire sur le drapeau. */
   readonly funFact: string;
 }

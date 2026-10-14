@@ -4,12 +4,11 @@ import { AnswerOptions } from './answer-options/answer-options';
 import { FlagCard } from './flag-card/flag-card';
 import { FunFact } from './fun-fact/fun-fact';
 import { MapPanel } from './map-panel/map-panel';
-import { MnemonicPanel } from './mnemonic-panel/mnemonic-panel';
 import { QuizService } from './quiz/quiz.service';
 
 @Component({
   selector: 'app-root',
-  imports: [AnswerOptions, FdBadge, FdSwitch, FlagCard, FunFact, MapPanel, MnemonicPanel],
+  imports: [AnswerOptions, FdBadge, FdSwitch, FlagCard, FunFact, MapPanel],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   encapsulation: ViewEncapsulation.None,

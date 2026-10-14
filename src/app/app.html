@@ -20,10 +20,11 @@
     <app-answer-options />
   </section>
 
-  <app-fun-fact [country]="quiz.question().country" [revealed]="quiz.isAnswered()" />
-
-  <div class="app-bottom">
-    <app-mnemonic-panel [country]="quiz.question().country" [revealed]="quiz.isAnswered()" />
-    <app-map-panel [country]="quiz.question().country" [revealed]="quiz.isAnswered()" />
-  </div>
+  <!-- Rien ne s'affiche avant la réponse : l'anecdote et la carte donneraient la solution. -->
+  @if (quiz.isAnswered()) {
+    <div class="app-bottom">
+      <app-fun-fact [country]="quiz.question().country" />
+      <app-map-panel [country]="quiz.question().country" />
+    </div>
+  }
 </main>

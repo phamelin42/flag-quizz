@@ -5,7 +5,6 @@ import { COUNTRIES, QuizService, RANDOM } from './quiz.service';
 const codes = ['aa', 'bb', 'cc', 'dd', 'ee', 'ff'];
 const countries: Country[] = codes.map((code) => ({
   code,
-  mnemonic: `mémo ${code}`,
   funFact: `anecdote ${code}`,
 }));
 

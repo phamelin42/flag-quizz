@@ -6,7 +6,7 @@
       fdButton
       block
       class="app-option"
-      [variant]="state === 'correct' ? 'primary' : state === 'wrong' ? 'danger' : 'secondary'"
+      [variant]="state === 'correct' ? 'success' : state === 'wrong' ? 'danger' : 'secondary'"
       [attr.aria-disabled]="state === 'dimmed' ? 'true' : null"
       (click)="choose(option.code)"
     >
@@ -25,20 +25,16 @@
   }
 </div>
 
-<div class="app-verdict" aria-live="polite">
+<!-- Le verdict n'a pas d'encart : la couleur et l'icône des boutons le montrent, ce texte l'annonce. -->
+<p class="fd-sr app-status" aria-live="polite">
   @if (quiz.isAnswered()) {
-    <fd-alert
-      [tone]="quiz.isCorrect() ? 'success' : 'warning'"
-      [title]="quiz.isCorrect() ? 'Bravo !' : 'Raté !'"
-    >
-      {{ quiz.isCorrect() ? 'Bonne réponse' : 'La bonne réponse était' }} :
-      {{ name(quiz.question().country.code) }}.
-    </fd-alert>
+    {{ quiz.isCorrect() ? 'Bonne réponse' : 'Mauvaise réponse. La bonne réponse était' }} :
+    {{ name(quiz.question().country.code) }}.
   }
-</div>
+</p>
 
 @if (quiz.isAnswered()) {
-  <button #nextBtn fdButton variant="primary" size="lg" block (click)="next()">
+  <button #nextBtn fdButton size="lg" block (click)="next()">
     Drapeau suivant
     <svg fdIcon="chevron-right"></svg>
   </button>

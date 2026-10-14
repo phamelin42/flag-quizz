@@ -9,16 +9,16 @@ import {
   viewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import { FdAlert, FdButton, FdIcon } from 'fuda';
+import { FdButton, FdIcon } from 'fuda';
 import { countryName } from '../data/country-name';
 import { QuizService } from '../quiz/quiz.service';
 
 type OptionState = 'idle' | 'correct' | 'wrong' | 'dimmed';
 
-/** Les 4 réponses, le verdict une fois la question répondue et le bouton pour passer à la suivante. */
+/** Les 4 réponses, le verdict (annoncé, sans encart) et le bouton pour passer à la suivante. */
 @Component({
   selector: 'app-answer-options',
-  imports: [FdAlert, FdButton, FdIcon],
+  imports: [FdButton, FdIcon],
   templateUrl: './answer-options.html',
   styleUrl: './answer-options.scss',
   encapsulation: ViewEncapsulation.None,

@@ -4,7 +4,7 @@ Un quiz de drapeaux en Angular, construit avec le design system [Fuda](https://g
 
 - Un drapeau s'affiche, quatre pays sont proposés, un seul est le bon.
 - Un clic valide ou non la réponse. Le score, la série en cours et le record s'affichent en haut.
-- Une fois la réponse donnée apparaissent : **l'astuce** pour reconnaître le drapeau (en bas à gauche), **la carte Google Maps** du pays (en bas à droite) et **une anecdote** sur le drapeau.
+- Une fois la réponse donnée apparaissent **une anecdote** sur le drapeau (en bas à gauche) et **la carte Google Maps** du pays (en bas à droite). Avant, aucun de ces encarts n'est affiché.
 - Les 195 pays (193 membres de l'ONU, le Vatican et la Palestine) sont tirés dans un ordre mélangé, sans répétition jusqu'à épuisement, puis le paquet est refait.
 - Thème Jour par défaut, thème Nuit au choix du joueur. Clavier complet, WCAG 2.2 AA vérifié par axe.
 
@@ -42,4 +42,4 @@ La carte est une iframe `https://www.google.com/maps?q=<pays>&output=embed&hl=fr
 
 ## Ajouter ou corriger un pays
 
-Les fiches sont dans `src/app/data/` (un fichier par continent) : code ISO en minuscules, astuce, anecdote. Le nom français vient de `Intl.DisplayNames` (surcharges dans `country-name.ts`). Les drapeaux viennent de [flag-icons](https://github.com/lipis/flag-icons) (`flags/4x3/<code>.svg`). `countries.spec.ts` vérifie que chaque fiche a un drapeau, un nom et des textes.
+Les fiches sont dans `src/app/data/` (un fichier par continent) : code ISO en minuscules et anecdote. Le nom français vient de `Intl.DisplayNames` (surcharges dans `country-name.ts`). Les drapeaux viennent de [flag-icons](https://github.com/lipis/flag-icons) (`flags/4x3/<code>.svg`). `countries.spec.ts` vérifie que chaque fiche a un drapeau, un nom et une anecdote.
