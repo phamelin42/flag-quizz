@@ -35,6 +35,8 @@ export class QuizService {
   private lastCode: string | null = null;
 
   readonly question = signal<Question>(this.draw());
+  /** La question d'après, tirée d'avance : l'appli peut en charger le drapeau avant le clic sur « suivant ». */
+  readonly upcoming = signal<Question>(this.draw());
   /** Code choisi par le joueur, `null` tant qu'il n'a pas répondu. */
   readonly answer = signal<string | null>(null);
   readonly score = signal(0);
@@ -67,7 +69,8 @@ export class QuizService {
   next(): void {
     if (!this.isAnswered()) return;
     this.answer.set(null);
-    this.question.set(this.draw());
+    this.question.set(this.upcoming());
+    this.upcoming.set(this.draw());
   }
 
   private draw(): Question {

@@ -62,6 +62,25 @@ test('Drapeau suivant pose une nouvelle question sans réponse ni carte', async 
   await expect(page.locator('.app-stats')).toContainText('Série 1');
 });
 
+test('le drapeau suivant se charge dès la réponse, avant « Drapeau suivant »', async ({ page }) => {
+  const requested: string[] = [];
+  page.on('request', (request) => {
+    const match = /flags\/4x3\/([a-z]{2})\.svg$/.exec(request.url());
+    if (match) requested.push(match[1]);
+  });
+  await openQuiz(page);
+  const first = await currentCode(page);
+  expect(requested).toEqual([first]);
+
+  await answer(page, true);
+  await expect.poll(() => requested.length).toBe(2);
+  const upcoming = requested[1];
+  expect(upcoming).not.toBe(first);
+
+  await page.getByRole('button', { name: 'Drapeau suivant' }).click();
+  await expect(page.locator('.app-flag')).toHaveAttribute('src', `flags/4x3/${upcoming}.svg`);
+});
+
 test('une question répond une seule fois', async ({ page }) => {
   await openQuiz(page);
   await answer(page, false);

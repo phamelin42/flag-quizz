@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { countryName } from './data/country-name';
+import { FlagPreloader } from './quiz/flag-preloader';
 import { COUNTRIES, QuizService, RANDOM } from './quiz/quiz.service';
 import { COUNTRY_LIST } from './data/countries';
 
@@ -13,9 +14,11 @@ function seeded(seed: number): () => number {
 }
 
 async function setup() {
+  const preload = vi.fn();
   TestBed.configureTestingModule({
     imports: [App],
     providers: [
+      { provide: FlagPreloader, useValue: { preload } },
       { provide: COUNTRIES, useValue: COUNTRY_LIST },
       { provide: RANDOM, useValue: seeded(11) },
     ],
@@ -28,7 +31,7 @@ async function setup() {
   const options = () => Array.from(el.querySelectorAll<HTMLButtonElement>('.app-option'));
   const optionFor = (code: string) =>
     options().find((b) => b.textContent!.includes(countryName(code)))!;
-  return { fixture, el, quiz, settle, options, optionFor };
+  return { fixture, el, quiz, settle, options, optionFor, preload };
 }
 
 describe('App', () => {
@@ -46,6 +49,17 @@ describe('App', () => {
     expect(el.querySelector('iframe')).toBeNull();
     expect(el.textContent).not.toContain(quiz.question().country.funFact);
     expect(el.textContent).not.toContain('Drapeau suivant');
+  });
+
+  it('charge le drapeau suivant dès la réponse, pas avant', async () => {
+    const { quiz, optionFor, settle, preload } = await setup();
+    expect(preload).not.toHaveBeenCalled();
+
+    optionFor(quiz.question().country.code).click();
+    await settle();
+
+    expect(preload).toHaveBeenCalledTimes(1);
+    expect(preload).toHaveBeenCalledWith(quiz.upcoming().country);
   });
 
   it('n’affiche aucun encart avant la réponse', async () => {

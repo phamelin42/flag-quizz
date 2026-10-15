@@ -49,6 +49,17 @@ describe('QuizService', () => {
     }
   });
 
+  it('pose à « suivant » la question annoncée d’avance', () => {
+    const quiz = setup();
+    for (let i = 0; i < 12; i++) {
+      const announced = quiz.upcoming();
+      expect(announced.country.code).not.toBe(quiz.question().country.code);
+      answerCorrectly(quiz);
+      quiz.next();
+      expect(quiz.question()).toBe(announced);
+    }
+  });
+
   it('ne répète aucun pays avant d’avoir épuisé tous les pays', () => {
     const quiz = setup();
     const seen: string[] = [];
