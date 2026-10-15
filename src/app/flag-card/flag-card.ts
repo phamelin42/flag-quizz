@@ -1,7 +1,7 @@
-import { Component, computed, input, ViewEncapsulation } from '@angular/core';
+import { Component, computed, inject, input, ViewEncapsulation } from '@angular/core';
 import { FdCard } from 'fuda';
 import { Country } from '../data/country';
-import { countryName } from '../data/country-name';
+import { LocaleService } from '../i18n/locale.service';
 import { flagUrl } from './flag-url';
 
 /** Le drapeau à deviner. Tant qu'il n'est pas répondu, son texte alternatif ne donne pas le nom du pays. */
@@ -17,8 +17,11 @@ export class FlagCard {
   readonly country = input.required<Country>();
   readonly revealed = input(false);
 
+  protected readonly i18n = inject(LocaleService);
+
   protected readonly src = computed(() => flagUrl(this.country()));
-  protected readonly alt = computed(() =>
-    this.revealed() ? `Drapeau : ${countryName(this.country().code)}` : 'Drapeau à deviner',
-  );
+  protected readonly alt = computed(() => {
+    const t = this.i18n.messages();
+    return this.revealed() ? t.flagOf(this.i18n.countryName(this.country().code)) : t.flagToGuess;
+  });
 }

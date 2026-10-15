@@ -1,6 +1,6 @@
 # Flag Quizz
 
-Quiz de drapeaux en Angular 22, construit avec la bibliothèque **Fuda** (`design-system-fuda`). Textes de l'interface, documentation et messages de commit en français.
+Quiz de drapeaux en Angular 22, construit avec la bibliothèque **Fuda** (`design-system-fuda`). Textes de l'interface, documentation et messages de commit en français ; le site existe aussi en anglais sous `/en/` (voir `README.md`, section Langues).
 
 ## Commandes
 
@@ -31,6 +31,9 @@ Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts
 - « Drapeau suivant » est un bouton secondaire (le style par défaut de Fuda), pas `primary`.
 - Après une réponse, le focus va sur « Drapeau suivant » ; après « suivant », sur la première proposition.
 - L'URL de la carte est construite uniquement depuis `countryName(code)`, jamais depuis une saisie : c'est ce qui justifie `bypassSecurityTrustResourceUrl` dans `map-panel.ts`.
+- **Tout texte visible passe par `LocaleService`** (`i18n.messages()`, `countryName`, `funFact`) : jamais de chaîne en dur dans un gabarit. Le français est à la racine, l'anglais sous `/en/` ; le même jeu de règles vaut dans les deux langues (rien ne donne la réponse avant le clic, verdict jamais par la couleur seule).
+- Un pays ajouté a une anecdote dans `data/` **et** dans `fun-facts.en.ts` ; un texte d'interface ajouté l'est dans `Messages` pour les deux langues (le compilateur et `messages.spec.ts` le vérifient).
+- Changer l'`src` d'une iframe déjà chargée ajoute une entrée à l'historique : la carte est recréée (`@for … track`) quand son adresse change, sinon « Retour » annulerait la carte avant la langue.
 - Les noms de pays n'ont pas d'article (« Japon », pas « le Japon ») : les phrases sont tournées en conséquence (« La bonne réponse était : Japon »).
 
 ## Conventions Angular

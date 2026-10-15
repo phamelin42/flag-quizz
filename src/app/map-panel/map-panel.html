@@ -1,11 +1,15 @@
 <div fdCard>
-  <span slot="title">Où se trouve ce pays ?</span>
+  <span slot="title">{{ i18n.messages().mapTitle }}</span>
   <span slot="meta">{{ name() }}</span>
-  <iframe
-    class="app-map"
-    [src]="src()"
-    [title]="'Carte Google Maps : ' + name()"
-    loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade"
-  ></iframe>
+  <!-- Changer l'adresse d'une iframe déjà chargée ajoute une entrée à l'historique (le bouton « Retour »
+       annulerait la carte avant la langue) : on en recrée une, dont le premier chargement n'en ajoute pas. -->
+  @for (url of [src()]; track url) {
+    <iframe
+      class="app-map"
+      [src]="url"
+      [title]="i18n.messages().mapFrameTitle(name())"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  }
 </div>

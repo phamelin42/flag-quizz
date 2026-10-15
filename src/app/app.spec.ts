@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { countryName } from './data/country-name';
+import { FUN_FACTS_EN } from './data/fun-facts.en';
 import { FlagPreloader } from './quiz/flag-preloader';
 import { COUNTRIES, QuizService, RANDOM } from './quiz/quiz.service';
 import { COUNTRY_LIST } from './data/countries';
@@ -35,6 +36,10 @@ async function setup() {
 }
 
 describe('App', () => {
+  afterEach(() => {
+    history.replaceState(null, '', '/');
+  });
+
   it('affiche un drapeau et 4 propositions', async () => {
     const { el, options, quiz } = await setup();
     const img = el.querySelector<HTMLImageElement>('.app-flag')!;
@@ -158,5 +163,71 @@ describe('App', () => {
     input.click();
     await settle();
     expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
+  });
+  describe('version anglaise', () => {
+    const link = (el: HTMLElement) => el.querySelector<HTMLAnchorElement>('a.app-language')!;
+
+    it('propose le lien vers /en/, nommé en anglais, sans changer de langue au rendu', async () => {
+      const { el } = await setup();
+      expect(link(el).getAttribute('href')).toBe('/en/');
+      expect(link(el).textContent).toContain('English');
+      expect(link(el).getAttribute('lang')).toBe('en');
+      expect(el.textContent).toContain('Quel est ce drapeau ?');
+    });
+
+    it('passe l’interface en anglais au clic, sans perdre la partie en cours', async () => {
+      const { el, quiz, optionFor, settle } = await setup();
+      const { country } = quiz.question();
+      optionFor(country.code).click();
+      await settle();
+
+      link(el).click();
+      await settle();
+
+      expect(location.pathname).toBe('/en/');
+      expect(document.documentElement.lang).toBe('en');
+      expect(el.textContent).toContain('Which flag is this?');
+      expect(el.textContent).toContain('Next flag');
+      expect(el.querySelector('.app-stats')!.textContent).toContain('Score 1 / 1');
+      expect(el.querySelector('.app-status')!.textContent).toContain(
+        `Correct: ${countryName(country.code, 'en')}.`,
+      );
+      expect(el.querySelector('.app-fun-fact')!.textContent).toContain(FUN_FACTS_EN[country.code]);
+      const iframe = el.querySelector<HTMLIFrameElement>('iframe.app-map')!;
+      expect(new URL(iframe.src).searchParams.get('hl')).toBe('en');
+      expect(new URL(iframe.src).searchParams.get('q')).toBe(countryName(country.code, 'en'));
+      expect(el.querySelector('.app-flag')!.getAttribute('alt')).toBe(
+        `Flag of ${countryName(country.code, 'en')}`,
+      );
+      expect(link(el).getAttribute('href')).toBe('/');
+      expect(link(el).textContent).toContain('Français');
+    });
+
+    it('garde le nom du pays secret en anglais avant la réponse', async () => {
+      const { el, quiz, settle } = await setup();
+      link(el).click();
+      await settle();
+
+      expect(el.querySelector('.app-flag')!.getAttribute('alt')).toBe('Flag to guess');
+      expect(el.textContent).not.toContain(FUN_FACTS_EN[quiz.question().country.code]);
+      expect(el.querySelector('iframe')).toBeNull();
+    });
+
+    it('laisse le navigateur ouvrir /en/ lui-même quand on clique avec Ctrl', async () => {
+      const { el, settle } = await setup();
+      let prevented: boolean | undefined;
+      // Après le gestionnaire du lien : on note ce qu'il a fait, puis on évite la vraie navigation (jsdom).
+      el.addEventListener('click', (event) => {
+        prevented = event.defaultPrevented;
+        event.preventDefault();
+      });
+      link(el).dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true }),
+      );
+      await settle();
+      expect(prevented).toBe(false);
+      expect(location.pathname).toBe('/');
+      expect(el.textContent).toContain('Quel est ce drapeau ?');
+    });
   });
 });

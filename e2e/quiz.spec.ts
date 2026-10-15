@@ -93,7 +93,8 @@ test('le clavier suffit : répondre, puis passer au drapeau suivant', async ({ p
   await openQuiz(page);
   const first = await currentCode(page);
 
-  // Le premier arrêt de tabulation est le sélecteur de thème, puis les 4 propositions.
+  // Les premiers arrêts de tabulation sont le sélecteur de thème et le lien de langue, puis les 4 propositions.
+  await page.keyboard.press('Tab');
   await page.keyboard.press('Tab');
   await page.keyboard.press('Tab');
   await expect(page.locator('.app-option').first()).toBeFocused();
@@ -132,4 +133,88 @@ test('les 4 propositions tiennent sur un écran de téléphone', async ({ page }
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
   );
   expect(overflow).toBe(false);
+});
+
+test.describe('version anglaise', () => {
+  test('/en/ s’ouvre en anglais, avec le lien vers le français', async ({ page }) => {
+    await openQuiz(page, 'light', 'en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page).toHaveTitle('Flag Quizz');
+    await expect(page.getByText('Which flag is this?')).toBeVisible();
+    await expect(page.locator('.app-flag')).toHaveAttribute('alt', 'Flag to guess');
+    await expect(page.locator('.app-stats')).toContainText('Score 0 / 0');
+    await expect(page.locator('.app-stats')).toContainText('Streak 0');
+    await expect(page.getByText('Night theme')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Français' })).toHaveAttribute('href', '/');
+  });
+
+  test('une partie complète en anglais', async ({ page }) => {
+    await openQuiz(page, 'light', 'en');
+    const code = await answer(page, true, 'en');
+
+    await expect(page.locator('.app-status')).toContainText(`Correct: ${nameOf(code, 'en')}.`);
+    await expect(page.locator('.app-option.fd-button--success')).toContainText(nameOf(code, 'en'));
+    await expect(page.locator('.app-flag')).toHaveAttribute('alt', `Flag of ${nameOf(code, 'en')}`);
+    await expect(page.getByText('Did you know?')).toBeVisible();
+    await expect(page.locator('.app-fun-fact')).not.toContainText(/[éèàç]/);
+    const src = new URL((await page.locator('iframe.app-map').getAttribute('src'))!);
+    expect(src.searchParams.get('q')).toBe(nameOf(code, 'en'));
+    expect(src.searchParams.get('hl')).toBe('en');
+
+    await page.getByRole('button', { name: 'Next flag' }).click();
+    await expect(page.locator('.app-flag')).not.toHaveAttribute('src', `flags/4x3/${code}.svg`);
+    await expect(page.locator('.app-stats')).toContainText('Streak 1');
+  });
+
+  test('un mauvais choix est annoncé en anglais', async ({ page }) => {
+    await openQuiz(page, 'light', 'en');
+    const code = await answer(page, false, 'en');
+    await expect(page.locator('.app-status')).toContainText(
+      `Wrong answer. The correct answer was: ${nameOf(code, 'en')}.`,
+    );
+    await expect(page.locator('.app-option.fd-button--danger')).toContainText(
+      'your answer, incorrect',
+    );
+  });
+
+  test('changer de langue garde la partie et suit l’adresse', async ({ page }) => {
+    await openQuiz(page);
+    const code = await answer(page, true);
+    await expect(page.locator('.app-stats')).toContainText('Score 1 / 1');
+
+    await page.getByRole('link', { name: 'English' }).click();
+    await expect(page).toHaveURL(/\/en\/$/);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('.app-stats')).toContainText('Score 1 / 1');
+    await expect(page.locator('.app-option.fd-button--success')).toContainText(nameOf(code, 'en'));
+    await expect(page.getByRole('button', { name: 'Next flag' })).toBeVisible();
+
+    // Retour arrière : on revient au français.
+    await page.evaluate(() => history.back());
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
+    await expect(page.getByRole('button', { name: 'Drapeau suivant' })).toBeVisible();
+
+    // Un rechargement reste dans la langue de l'adresse.
+    await page.evaluate(() => history.forward());
+    await expect(page).toHaveURL(/\/en\/$/);
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.getByText('Which flag is this?')).toBeVisible();
+  });
+
+  test('chaque langue a sa page d’accueil statique, avec son titre et sa langue', async ({
+    request,
+  }) => {
+    const fr = await (await request.get('/')).text();
+    const en = await (await request.get('/en/')).text();
+    expect(fr).toContain('<html lang="fr"');
+    expect(fr).toContain('Devine le pays à partir de son drapeau.');
+    expect(en).toContain('<html lang="en"');
+    expect(en).toContain('Guess the country from its flag.');
+  });
+
+  test('le français reste la langue par défaut sur les adresses inconnues', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
+  });
 });

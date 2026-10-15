@@ -1,6 +1,6 @@
 <article fdCard sky="yamabuki" emblem="koi">
-  <fd-badge slot="badge" tone="yamabuki">Le saviez-vous ?</fd-badge>
-  <span slot="title">Un bout d’histoire</span>
-  <span slot="meta">Drapeau : {{ name() }}</span>
-  {{ country().funFact }}
+  <fd-badge slot="badge" tone="yamabuki">{{ i18n.messages().didYouKnow }}</fd-badge>
+  <span slot="title">{{ i18n.messages().factTitle }}</span>
+  <span slot="meta">{{ i18n.messages().flagOf(name()) }}</span>
+  {{ fact() }}
 </article>
