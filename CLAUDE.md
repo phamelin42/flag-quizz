@@ -57,7 +57,7 @@ Uniquement des custom properties issues des tokens Fuda (couleur, espacement, ra
 
 ## Dépendance Fuda
 
-Voir `README.md` : installée depuis git (`prepare` construit la lib). La branche visée est dans `package.json` ; la repointer sur `main` quand elle sera fusionnée. Si une icône, une variante ou un composant manque, on l'ajoute dans Fuda, pas ici : le bouton `success` (vert) et le token `tokiwa-press` viennent de là.
+Voir `README.md` : installée depuis git (`prepare` construit la lib). Elle suit la branche `main` de Fuda, au commit figé par `package-lock.json`. Après `npm install fuda`, remettre `git+https` à la place de `github:` et de `git+ssh` (package.json et lockfile : voir `README.md`). Si une icône, une variante ou un composant manque, on l'ajoute dans Fuda, pas ici : le bouton `success` (vert) et le token `tokiwa-press` viennent de là.
 
 ## Contenu
 

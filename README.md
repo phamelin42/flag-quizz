@@ -30,13 +30,13 @@ Pour lancer Playwright avec un Chromium déjà installé : `PLAYWRIGHT_CHROMIUM_
 
 ## La dépendance Fuda
 
-Fuda n'est pas publiée sur npm (le paquet `fuda` du registre est un autre projet). `package.json` la prend sur GitHub, à une branche précise :
+Fuda n'est pas publiée sur npm (le paquet `fuda` du registre est un autre projet). `package.json` la prend sur la branche `main` de son dépôt GitHub, et `package-lock.json` fige le commit exact :
 
 ```json
-"fuda": "git+https://github.com/phamelin42/design-system-fuda.git#claude/blissful-gates-sj2nz2"
+"fuda": "git+https://github.com/phamelin42/design-system-fuda.git#main"
 ```
 
-Le script `prepare` de Fuda construit la bibliothèque à l'installation, ce qui rend `npm ci` plus long. **Quand cette branche de Fuda sera fusionnée, remplacer `#claude/blissful-gates-sj2nz2` par `#main`** (ou un tag), puis `npm install` pour mettre à jour `package-lock.json`.
+Le script `prepare` de Fuda construit la bibliothèque à l'installation, ce qui rend `npm ci` plus long. Pour passer à une version plus récente de Fuda : `npm install fuda`. Cette commande réécrit l'adresse en `github:…` et le lockfile en `git+ssh://…`, qui échoue sans clé SSH (en CI, sur Vercel) : **remettre `git+https://github.com/…` à la place dans `package.json` et dans `package-lock.json`** (la clé `fuda` des dépendances et le champ `resolved`), puis vérifier avec `rm -rf node_modules/fuda && npm ci`.
 
 ## La carte Google Maps
 
