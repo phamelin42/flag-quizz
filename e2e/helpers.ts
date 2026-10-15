@@ -15,13 +15,13 @@ export function nameOf(code: string, locale: Locale = 'fr'): string {
   return OVERRIDES[locale][code] ?? names[locale].of(code.toUpperCase())!;
 }
 
-/** Google n'est pas contacté pendant les tests : l'iframe reçoit une page vide. */
+/** OpenStreetMap n'est pas contacté pendant les tests : l'iframe reçoit une page vide. */
 export async function openQuiz(
   page: Page,
   theme: 'light' | 'dark' = 'light',
   locale: Locale = 'fr',
 ): Promise<void> {
-  await page.route('https://www.google.com/**', (route) =>
+  await page.route('https://www.openstreetmap.org/**', (route) =>
     route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>carte</title>' }),
   );
   // Le thème Jour est celui par défaut : on ne force que le thème Nuit (et pas à chaque rechargement du test).

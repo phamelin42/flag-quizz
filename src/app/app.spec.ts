@@ -6,6 +6,7 @@ import { MNEMONICS_EN } from './data/mnemonics.en';
 import { FlagPreloader } from './quiz/flag-preloader';
 import { COUNTRIES, QuizService, RANDOM } from './quiz/quiz.service';
 import { COUNTRY_LIST } from './data/countries';
+import { COUNTRY_BOUNDS } from './data/country-bounds';
 
 function seeded(seed: number): () => number {
   let state = seed;
@@ -88,7 +89,9 @@ describe('App', () => {
     expect(el.querySelector('.app-mnemonic-panel')!.textContent).toContain(country.mnemonic);
     expect(el.querySelector('.app-fun-fact')!.textContent).toContain(country.funFact);
     const iframe = el.querySelector<HTMLIFrameElement>('iframe.app-map')!;
-    expect(new URL(iframe.src).searchParams.get('q')).toBe(countryName(country.code));
+    expect(new URL(iframe.src).searchParams.get('bbox')).toBe(
+      COUNTRY_BOUNDS[country.code].join(','),
+    );
     expect(iframe.title).toContain(countryName(country.code));
     expect(el.querySelector('.app-flag')!.getAttribute('alt')).toBe(
       `Drapeau : ${countryName(country.code)}`,
@@ -237,8 +240,7 @@ describe('App', () => {
       expect(el.querySelector('.app-mnemonic-panel')!.textContent).toContain('Tip');
       expect(el.querySelector('.app-fun-fact')!.textContent).toContain(FUN_FACTS_EN[country.code]);
       const iframe = el.querySelector<HTMLIFrameElement>('iframe.app-map')!;
-      expect(new URL(iframe.src).searchParams.get('hl')).toBe('en');
-      expect(new URL(iframe.src).searchParams.get('q')).toBe(countryName(country.code, 'en'));
+      expect(iframe.title).toBe(`OpenStreetMap map: ${countryName(country.code, 'en')}`);
       expect(el.querySelector('.app-flag')!.getAttribute('alt')).toBe(
         `Flag of ${countryName(country.code, 'en')}`,
       );

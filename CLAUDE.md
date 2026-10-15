@@ -23,7 +23,7 @@ Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts
 - `src/app/data/` : une fiche par pays (`code`, `mnemonic`, `funFact`), un fichier par continent, assemblées dans `countries.ts`. Le nom français vient de `Intl.DisplayNames` (`country-name.ts`). Les drapeaux sont les SVG de `flag-icons`, copiés dans `flags/4x3/` par `angular.json`.
 - `src/app/quiz/quiz.service.ts` : tout l'état de la partie (question, réponse, score, série) en signaux. `COUNTRIES` et `RANDOM` sont des jetons d'injection, remplacés dans les tests pour des tirages reproductibles.
 - Un dossier par composant (`flag-card`, `answer-options`, `mnemonic-panel`, `fun-fact`, `map-panel`) avec `.ts`, `.html`, `.scss`. `app` assemble la page.
-- `e2e/` : Playwright. Google n'est jamais contacté pendant les tests (l'iframe reçoit une page vide).
+- `e2e/` : Playwright. OpenStreetMap n'est jamais contacté pendant les tests (l'iframe reçoit une page vide).
 
 ## Règles du jeu à ne pas casser
 
@@ -34,10 +34,10 @@ Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts
 - **Mise en page** (écran large) : les réponses prennent la hauteur du drapeau et « Drapeau suivant » descend en bas de cette colonne (`margin-top: auto`). En bas de page, l'astuce et l'anecdote sont empilées à gauche et ont ensemble la hauteur de la carte à droite : la carte s'étire avec la colonne, elle n'a pas de hauteur fixe. `e2e/quiz.spec.ts` mesure ces alignements.
 - Liens externes, traduits par `Messages` mais vers les mêmes adresses dans les deux langues : « Quiz des capitales » (`https://capitals-quizz.phamelin.fr`) et « portfolio » (`https://phamelin.fr/#projects`), tous deux dans le pied de page (comme le lien vers ce quiz dans celui de capital-quizz). Ce sont des `a[fdLink]` ; l'en-tête n'a que les statistiques, le sélecteur de thème et le lien de langue.
 - Après une réponse, le focus va sur « Drapeau suivant » ; après « suivant », sur la première proposition.
-- L'URL de la carte est construite uniquement depuis `countryName(code)`, jamais depuis une saisie : c'est ce qui justifie `bypassSecurityTrustResourceUrl` dans `map-panel.ts`.
+- La carte est OpenStreetMap (pas Google : pas de lien « Ouvrir dans Maps »). Son URL est construite uniquement depuis le code du pays et `country-bounds.ts`, jamais depuis une saisie : c'est ce qui justifie `bypassSecurityTrustResourceUrl` dans `map-panel.ts`.
 - **Tout texte visible passe par `LocaleService`** (`i18n.messages()`, `countryName`, `funFact`) : jamais de chaîne en dur dans un gabarit. Le français est à la racine, l'anglais sous `/en/` ; le même jeu de règles vaut dans les deux langues (rien ne donne la réponse avant le clic, verdict jamais par la couleur seule).
-- Un pays ajouté a une astuce et une anecdote dans `data/` **et** dans `mnemonics.en.ts` et `fun-facts.en.ts` ; un texte d'interface ajouté l'est dans `Messages` pour les deux langues (le compilateur et `messages.spec.ts` le vérifient).
-- Changer l'`src` d'une iframe déjà chargée ajoute une entrée à l'historique : la carte est recréée (`@for … track`) quand son adresse change, sinon « Retour » annulerait la carte avant la langue.
+- Un pays ajouté a une astuce et une anecdote dans `data/` **et** dans `mnemonics.en.ts` et `fun-facts.en.ts`, et son cadre de carte dans `country-bounds.ts` (généré : on relance `tools/build-country-bounds.mjs`, jamais à la main) ; un texte d'interface ajouté l'est dans `Messages` pour les deux langues (le compilateur et `messages.spec.ts` le vérifient).
+- Changer l'`src` d'une iframe déjà chargée ajoute une entrée à l'historique : la carte est recréée (`@for … track`) quand son adresse change (nouveau pays), sinon « Retour » annulerait la carte avant la navigation.
 - Les noms de pays n'ont pas d'article (« Japon », pas « le Japon ») : les phrases sont tournées en conséquence (« La bonne réponse était : Japon »).
 
 ## Conventions Angular

@@ -6,8 +6,8 @@ import { LocaleService } from '../i18n/locale.service';
 import { mapUrl } from './map-url';
 
 /**
- * Cadre en bas à droite : le pays sur Google Maps. Le parent ne l'affiche qu'une fois la question
- * répondue : l'iframe n'existe pas avant, donc on ne contacte pas Google et la carte ne donne pas la réponse.
+ * Cadre en bas à droite : le pays sur OpenStreetMap. Le parent ne l'affiche qu'une fois la question
+ * répondue : l'iframe n'existe pas avant, donc on ne contacte pas OpenStreetMap et la carte ne donne pas la réponse.
  */
 @Component({
   selector: 'app-map-panel',
@@ -24,10 +24,8 @@ export class MapPanel {
   protected readonly i18n = inject(LocaleService);
 
   protected readonly name = computed(() => this.i18n.countryName(this.country().code));
-  /** L'URL est construite uniquement à partir de nos données (`countryName`, `mapLanguage`), donc sûre à approuver. */
+  /** L'URL est construite uniquement à partir de nos données (le code du pays), donc sûre à approuver. */
   protected readonly src = computed<SafeResourceUrl>(() =>
-    this.sanitizer.bypassSecurityTrustResourceUrl(
-      mapUrl(this.name(), this.i18n.messages().mapLanguage),
-    ),
+    this.sanitizer.bypassSecurityTrustResourceUrl(mapUrl(this.country().code)),
   );
 }

@@ -25,8 +25,6 @@ export interface Messages {
   readonly factTitle: string;
   readonly mapTitle: string;
   readonly mapFrameTitle: (countryName: string) => string;
-  /** Langue de l'interface de Google Maps (paramètre `hl`). */
-  readonly mapLanguage: string;
   /** Étiquette de la navigation vers les autres quiz du même auteur. */
   readonly otherQuizzesLabel: string;
   readonly capitalsQuiz: string;
@@ -57,8 +55,7 @@ const fr: Messages = {
   didYouKnow: 'Le saviez-vous ?',
   factTitle: 'Un bout d’histoire',
   mapTitle: 'Où se trouve ce pays ?',
-  mapFrameTitle: (name) => `Carte Google Maps : ${name}`,
-  mapLanguage: 'fr',
+  mapFrameTitle: (name) => `Carte OpenStreetMap : ${name}`,
   otherQuizzesLabel: 'Autres quiz',
   capitalsQuiz: 'Quiz des capitales',
   portfolioPrompt: 'Vous voulez en voir plus ? Visitez mon',
@@ -87,8 +84,7 @@ const en: Messages = {
   didYouKnow: 'Did you know?',
   factTitle: 'A bit of history',
   mapTitle: 'Where is this country?',
-  mapFrameTitle: (name) => `Google Maps: ${name}`,
-  mapLanguage: 'en',
+  mapFrameTitle: (name) => `OpenStreetMap map: ${name}`,
   otherQuizzesLabel: 'Other quizzes',
   capitalsQuiz: 'Capitals quiz',
   portfolioPrompt: 'Want to see more? Visit my',

@@ -4,7 +4,7 @@ Un quiz de drapeaux en Angular, construit avec le design system [Fuda](https://g
 
 - Un drapeau s'affiche, quatre pays sont proposés, un seul est le bon.
 - Un clic valide ou non la réponse. Le score, la série en cours et le record s'affichent en haut.
-- Une fois la réponse donnée apparaissent **un moyen mnémotechnique** pour reconnaître le drapeau (une association avec un objet, un plat, un sport ou la forme du pays, ou la différence avec un drapeau jumeau) et **une anecdote**, en bas à gauche, ainsi que **la carte Google Maps** du pays, en bas à droite. Avant, aucun de ces encarts n'est affiché.
+- Une fois la réponse donnée apparaissent **un moyen mnémotechnique** pour reconnaître le drapeau (une association avec un objet, un plat, un sport ou la forme du pays, ou la différence avec un drapeau jumeau) et **une anecdote**, en bas à gauche, ainsi que **la carte OpenStreetMap** du pays, en bas à droite. Avant, aucun de ces encarts n'est affiché.
 - Le pied de page renvoie vers le [quiz des capitales](https://capitals-quizz.phamelin.fr) et vers mon [portfolio](https://phamelin.fr/#projects).
 - Les 195 pays (193 membres de l'ONU, le Vatican et la Palestine) sont tirés dans un ordre mélangé, sans répétition jusqu'à épuisement, puis le paquet est refait.
 - Deux langues : le français à la racine (`/`), l'anglais sous `/en/`. Un lien dans l'en-tête bascule sans recharger : la partie en cours continue et l'adresse suit (retour arrière compris).
@@ -42,9 +42,9 @@ Le script `prepare` de Fuda construit la bibliothèque à l'installation, ce qui
 
 Le cadre astuce a un lien « Proposer une meilleure astuce » : il ouvre un ticket GitHub pré-rempli (modèle `.github/ISSUE_TEMPLATE/astuce.yml`, étiquette `astuce`). Les tickets servent de stockage, sans serveur ni base de données. Chaque semaine, on relit les tickets ouverts, on garde ceux qui respectent la règle d’une astuce (voir `CLAUDE.md`), on les reporte dans `data/` et `mnemonics.en.ts`, puis on ferme le ticket.
 
-## La carte Google Maps
+## La carte OpenStreetMap
 
-La carte est une iframe `https://www.google.com/maps?q=<pays>&output=embed&hl=fr`. Cette forme ne demande aucune clé d'API mais n'est pas documentée par Google : si elle cessait de fonctionner, il faudrait passer à la [Maps Embed API](https://developers.google.com/maps/documentation/embed/get-started) avec une clé restreinte par domaine. L'iframe n'est créée qu'après la réponse, donc Google n'est contacté qu'à ce moment-là.
+La carte est une iframe d'intégration OpenStreetMap, `https://www.openstreetmap.org/export/embed.html?bbox=<ouest,sud,est,nord>&layer=mapnik` (plus un marqueur pour les petits pays). Elle ne demande aucune clé d'API et ne propose pas de lien « Ouvrir dans Maps ». Le cadre de chaque pays est dans `src/app/data/country-bounds.ts`, **généré** par `tools/build-country-bounds.mjs` à partir de [Natural Earth](https://www.naturalearthdata.com) (1:10m, domaine public) : `node tools/build-country-bounds.mjs ne_10m_admin_0_countries.geojson`. Il cadre le territoire principal (pas la Guyane pour la France) ; quelques archipels sont posés à la main dans le script. L'iframe n'est créée qu'après la réponse, donc OpenStreetMap n'est contacté qu'à ce moment-là. Les noms sur la carte sont ceux d'OpenStreetMap (langue locale), quelle que soit la langue du site.
 
 ## Langues
 
@@ -53,10 +53,9 @@ La langue vient de l'adresse (`localeFromPath`) : `/en` et `/en/…` sont en ang
 - `src/app/i18n/messages.ts` : tous les textes de l'interface, par langue (le type `Messages` oblige à les fournir dans les deux).
 - `src/app/i18n/locale.service.ts` : la langue courante (signal), `<html lang>`, titre et description de la page, nom, astuce et anecdote d'un pays dans la langue.
 - `src/app/i18n/seo.json` : titre et description par langue. `tools/localize-index.mjs`, lancé par `npm run build`, en tire `en/index.html` (même appli, mais `lang`, titre et description déjà anglais). `vercel.json` renvoie `/en` vers cette page.
-- La carte Google Maps est demandée dans la langue du site (`hl`).
 
 Ajouter une langue : l'ajouter à `Locale` et `localeFromPath`, fournir ses `Messages`, ses noms de pays (`country-name.ts`), ses astuces et ses anecdotes, puis `seo.json`.
 
 ## Ajouter ou corriger un pays
 
-Les fiches sont dans `src/app/data/` (un fichier par continent) : code ISO en minuscules, astuce et anecdote françaises ; l'astuce anglaise va dans `mnemonics.en.ts` et l'anecdote anglaise dans `fun-facts.en.ts`, sous le même code. Les noms viennent de `Intl.DisplayNames`, par langue (surcharges dans `country-name.ts`). Les drapeaux viennent de [flag-icons](https://github.com/lipis/flag-icons) (`flags/4x3/<code>.svg`). `countries.spec.ts` vérifie que chaque fiche a un drapeau, un nom, une astuce et une anecdote dans chaque langue.
+Les fiches sont dans `src/app/data/` (un fichier par continent) : code ISO en minuscules, astuce et anecdote françaises ; l'astuce anglaise va dans `mnemonics.en.ts` et l'anecdote anglaise dans `fun-facts.en.ts`, sous le même code. Les noms viennent de `Intl.DisplayNames`, par langue (surcharges dans `country-name.ts`). Les drapeaux viennent de [flag-icons](https://github.com/lipis/flag-icons) (`flags/4x3/<code>.svg`). Le cadre de la carte vient de `tools/build-country-bounds.mjs` (voir plus haut). `countries.spec.ts` vérifie que chaque fiche a un drapeau, un nom, une astuce et une anecdote dans chaque langue.
