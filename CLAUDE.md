@@ -16,6 +16,8 @@ Node ≥ 22.22.3 (exigé par Angular 22).
 
 Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts, et `e2e` si l'interface, le clavier ou le focus changent.
 
+**Toute modification de code finit par une PR** : on commit, on pousse la branche de travail, puis on ouvre la PR vers `main` sans attendre qu'on la demande (après vérification qu'il n'en existe pas déjà une ouverte pour cette branche). Une PR déjà fusionnée ne suit plus la branche : le travail suivant repart de `main` et ouvre une nouvelle PR.
+
 ## Structure
 
 - `src/app/data/` : une fiche par pays (`code`, `mnemonic`, `funFact`), un fichier par continent, assemblées dans `countries.ts`. Le nom français vient de `Intl.DisplayNames` (`country-name.ts`). Les drapeaux sont les SVG de `flag-icons`, copiés dans `flags/4x3/` par `angular.json`.
@@ -57,17 +59,23 @@ Uniquement des custom properties issues des tokens Fuda (couleur, espacement, ra
 
 ## Dépendance Fuda
 
-Voir `README.md` : installée depuis git (`prepare` construit la lib). La branche visée est dans `package.json` ; la repointer sur `main` quand elle sera fusionnée. Si une icône, une variante ou un composant manque, on l'ajoute dans Fuda, pas ici : le bouton `success` (vert) et le token `tokiwa-press` viennent de là.
+Voir `README.md` : installée depuis git (`prepare` construit la lib). Elle suit la branche `main` de Fuda, au commit figé par `package-lock.json`. Après `npm install fuda`, remettre `git+https` à la place de `github:` et de `git+ssh` (package.json et lockfile : voir `README.md`). Si une icône, une variante ou un composant manque, on l'ajoute dans Fuda, pas ici : le bouton `success` (vert) et le token `tokiwa-press` viennent de là.
 
 ## Contenu
 
 Les astuces et les anecdotes sont rédigées à la main, en français dans la fiche et en anglais dans `mnemonics.en.ts` et `fun-facts.en.ts`. Les vérifier avant d'en ajouter : un fait douteux ne vaut rien.
 
-Une astuce suit l'une de ces deux techniques, ou les deux :
+**Une astuce est un moyen mnémotechnique, pas une description.** Un moyen mnémotechnique est un procédé verbal, visuel ou logique qui facilite la mémorisation. Pour un drapeau, il **associe** un détail du drapeau à une image de la vie réelle, ou le **compare** à un autre drapeau. Si le texte pourrait se lire sans connaître le pays et ne fait que dire ce qu'on voit (« un damier rouge et blanc au centre »), ce n'est pas une astuce.
 
-- **Voir une image dans le drapeau** : un objet familier (le disque du Japon est le soleil levant, le Népal dessine l'Himalaya, la Suisse est une trousse de secours).
-- **Retenir la différence avec les drapeaux jumeaux** : un seul critère net (Irlande verte à la hampe, Côte d'Ivoire orange ; Monaco et Indonésie rouge en haut, Pologne l'inverse ; Australie à la grosse étoile en bas à gauche, comme la grosse île ; Nouvelle-Zélande à quatre étoiles rouges).
+Les associations qui marchent :
 
-Elle ne nomme les jumeaux que s'ils existent, vérifie chaque détail sur le drapeau (côté, ordre des bandes, nombre d'étoiles, couleur du disque et du fond : une astuce fausse est pire que pas d'astuce) et reste courte (une à deux phrases). Elle peut citer le pays, puisqu'elle n'apparaît qu'après la réponse. Pas d'apostrophe droite dans les textes : `countries.spec.ts` impose l'apostrophe typographique (’).
+- **Un objet, un plat, un lieu familier** : Japon, un bento « hinomaru » (riz blanc, prune rouge) ; Italie, une pizza margherita ; Suisse, le couteau suisse ; Suède, un magasin IKEA ; Grèce, les maisons blanches aux toits bleus de Santorin.
+- **Le sport, la culture** : Croatie, le maillot à damier de l'équipe de foot ; Argentine, le maillot bleu ciel et blanc ; Ghana, les « Black Stars ».
+- **La forme ou la géographie du pays** : Madagascar, le rouge et le vert dessinent le pays et la bande blanche est la mer ; Gambie, le ruban du fleuve ; Vanuatu, l'archipel en forme de Y ; Cap-Vert, dix îles en fer à cheval.
+- **Le sens ou le son du nom** : Slovénie, Triglav veut dire « trois têtes », donc trois sommets et trois étoiles ; Équateur, la ligne passe par le pays ; Arménie, l'abricot (Prunus armeniaca).
+- **Une phrase ou une image qui retient l'ordre** : « Oranje boven » (Pays-Bas), « broad white on top » (Union Jack), un feu tricolore couché (Mali) ou debout (Bolivie).
+- **La différence avec un drapeau jumeau**, en une phrase nette : Australie, une grosse étoile pour la grosse île, Nouvelle-Zélande, de petites étoiles ; Irlande, le trèfle vert collé au mât, Côte d'Ivoire, son reflet dans un miroir ; Monaco presque carré, l'Indonésie plus longue.
+
+L'astuce **n'est pas l'anecdote** : elle associe, l'anecdote raconte (histoire, légende, date). Elles ne répètent pas le même fait (`countries.spec.ts` le vérifie). Elle reste courte (une à deux phrases, 200 caractères au plus), peut citer le pays puisqu'elle n'apparaît qu'après la réponse, et vérifie chaque détail sur le drapeau (côté, ordre des bandes, nombre d'étoiles, couleur du disque et du fond : une astuce fausse est pire que pas d'astuce). Pas d'apostrophe droite dans les textes : on écrit l'apostrophe typographique (’).
 
 `countries.spec.ts` impose 195 pays, des codes uniques, un drapeau, un nom, une astuce et une anecdote pour chacun dans chaque langue, sans astuce en double.

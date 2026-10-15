@@ -61,6 +61,32 @@ describe('COUNTRY_LIST', () => {
     expect(new Set(english).size).toBe(english.length);
   });
 
+  it('a des astuces courtes : une à deux phrases', () => {
+    for (const { code, mnemonic } of COUNTRY_LIST) {
+      expect(mnemonic.length, `astuce de ${code}`).toBeLessThanOrEqual(200);
+      expect(MNEMONICS_EN[code].length, `astuce anglaise de ${code}`).toBeLessThanOrEqual(200);
+    }
+  });
+
+  it('ne recopie pas l’anecdote dans l’astuce : l’une associe, l’autre raconte', () => {
+    const windows = (text: string) => {
+      const words = text.toLowerCase().match(/[\p{L}\p{N}’-]+/gu) ?? [];
+      return new Set(
+        words
+          .map((_, i) => words.slice(i, i + 5).join(' '))
+          .filter((w) => w.split(' ').length === 5),
+      );
+    };
+    const shared = (a: string, b: string) => [...windows(a)].filter((w) => windows(b).has(w));
+    for (const { code, mnemonic, funFact } of COUNTRY_LIST) {
+      expect(shared(mnemonic, funFact), `astuce et anecdote de ${code}`).toEqual([]);
+      expect(
+        shared(MNEMONICS_EN[code], FUN_FACTS_EN[code]),
+        `astuce et anecdote anglaises de ${code}`,
+      ).toEqual([]);
+    }
+  });
+
   it('écrit les apostrophes de façon typographique, dans toutes les langues', () => {
     for (const { code, mnemonic, funFact } of COUNTRY_LIST) {
       const texts = [mnemonic, funFact, MNEMONICS_EN[code], FUN_FACTS_EN[code]].join(' ');

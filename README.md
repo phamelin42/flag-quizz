@@ -4,7 +4,7 @@ Un quiz de drapeaux en Angular, construit avec le design system [Fuda](https://g
 
 - Un drapeau s'affiche, quatre pays sont proposés, un seul est le bon.
 - Un clic valide ou non la réponse. Le score, la série en cours et le record s'affichent en haut.
-- Une fois la réponse donnée apparaissent **une astuce** pour reconnaître le drapeau (une image à y voir, ou la différence avec un drapeau jumeau) et **une anecdote**, en bas à gauche, ainsi que **la carte Google Maps** du pays, en bas à droite. Avant, aucun de ces encarts n'est affiché.
+- Une fois la réponse donnée apparaissent **un moyen mnémotechnique** pour reconnaître le drapeau (une association avec un objet, un plat, un sport ou la forme du pays, ou la différence avec un drapeau jumeau) et **une anecdote**, en bas à gauche, ainsi que **la carte Google Maps** du pays, en bas à droite. Avant, aucun de ces encarts n'est affiché.
 - Un lien en en-tête mène au [quiz des capitales](https://capitals-quizz.phamelin.fr), un autre en pied de page à mon [portfolio](https://phamelin.fr/#projects).
 - Les 195 pays (193 membres de l'ONU, le Vatican et la Palestine) sont tirés dans un ordre mélangé, sans répétition jusqu'à épuisement, puis le paquet est refait.
 - Deux langues : le français à la racine (`/`), l'anglais sous `/en/`. Un lien dans l'en-tête bascule sans recharger : la partie en cours continue et l'adresse suit (retour arrière compris).
@@ -30,13 +30,13 @@ Pour lancer Playwright avec un Chromium déjà installé : `PLAYWRIGHT_CHROMIUM_
 
 ## La dépendance Fuda
 
-Fuda n'est pas publiée sur npm (le paquet `fuda` du registre est un autre projet). `package.json` la prend sur GitHub, à une branche précise :
+Fuda n'est pas publiée sur npm (le paquet `fuda` du registre est un autre projet). `package.json` la prend sur la branche `main` de son dépôt GitHub, et `package-lock.json` fige le commit exact :
 
 ```json
-"fuda": "git+https://github.com/phamelin42/design-system-fuda.git#claude/blissful-gates-sj2nz2"
+"fuda": "git+https://github.com/phamelin42/design-system-fuda.git#main"
 ```
 
-Le script `prepare` de Fuda construit la bibliothèque à l'installation, ce qui rend `npm ci` plus long. **Quand cette branche de Fuda sera fusionnée, remplacer `#claude/blissful-gates-sj2nz2` par `#main`** (ou un tag), puis `npm install` pour mettre à jour `package-lock.json`.
+Le script `prepare` de Fuda construit la bibliothèque à l'installation, ce qui rend `npm ci` plus long. Pour passer à une version plus récente de Fuda : `npm install fuda`. Cette commande réécrit l'adresse en `github:…` et le lockfile en `git+ssh://…`, qui échoue sans clé SSH (en CI, sur Vercel) : **remettre `git+https://github.com/…` à la place dans `package.json` et dans `package-lock.json`** (la clé `fuda` des dépendances et le champ `resolved`), puis vérifier avec `rm -rf node_modules/fuda && npm ci`.
 
 ## La carte Google Maps
 
