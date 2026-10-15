@@ -18,21 +18,23 @@ Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts
 
 ## Structure
 
-- `src/app/data/` : une fiche par pays (`code`, `funFact`), un fichier par continent, assemblées dans `countries.ts`. Le nom français vient de `Intl.DisplayNames` (`country-name.ts`). Les drapeaux sont les SVG de `flag-icons`, copiés dans `flags/4x3/` par `angular.json`.
+- `src/app/data/` : une fiche par pays (`code`, `mnemonic`, `funFact`), un fichier par continent, assemblées dans `countries.ts`. Le nom français vient de `Intl.DisplayNames` (`country-name.ts`). Les drapeaux sont les SVG de `flag-icons`, copiés dans `flags/4x3/` par `angular.json`.
 - `src/app/quiz/quiz.service.ts` : tout l'état de la partie (question, réponse, score, série) en signaux. `COUNTRIES` et `RANDOM` sont des jetons d'injection, remplacés dans les tests pour des tirages reproductibles.
-- Un dossier par composant (`flag-card`, `answer-options`, `fun-fact`, `map-panel`) avec `.ts`, `.html`, `.scss`. `app` assemble la page.
+- Un dossier par composant (`flag-card`, `answer-options`, `mnemonic-panel`, `fun-fact`, `map-panel`) avec `.ts`, `.html`, `.scss`. `app` assemble la page.
 - `e2e/` : Playwright. Google n'est jamais contacté pendant les tests (l'iframe reçoit une page vide).
 
 ## Règles du jeu à ne pas casser
 
-- **Rien ne donne la réponse avant le clic** : anecdote, carte, nom dans le texte alternatif du drapeau. L'anecdote et la carte n'existent pas dans le DOM avant la réponse (`@if (quiz.isAnswered())` dans `app.html`), pas même sous forme d'encart vide.
+- **Rien ne donne la réponse avant le clic** : astuce, anecdote, carte, nom dans le texte alternatif du drapeau. L'astuce, l'anecdote et la carte n'existent pas dans le DOM avant la réponse (`@if (quiz.isAnswered())` dans `app.html`), pas même sous forme d'encart vide.
 - Une question ne se répond qu'une fois (`QuizService.choose` ignore le second clic).
 - Le verdict n'a pas d'encart. La bonne réponse passe en bouton `success` (vert) avec une coche, le mauvais choix en `danger` avec une croix, et un texte masqué (`fd-sr`, `aria-live`) l'annonce : il ne repose jamais sur la couleur seule.
 - « Drapeau suivant » est un bouton secondaire (le style par défaut de Fuda), pas `primary`.
+- **Mise en page** (écran large) : les réponses prennent la hauteur du drapeau et « Drapeau suivant » descend en bas de cette colonne (`margin-top: auto`). En bas de page, l'astuce et l'anecdote sont empilées à gauche et ont ensemble la hauteur de la carte à droite : la carte s'étire avec la colonne, elle n'a pas de hauteur fixe. `e2e/quiz.spec.ts` mesure ces alignements.
+- Liens externes, traduits par `Messages` mais vers les mêmes adresses dans les deux langues : « Quiz des capitales » (`https://capitals-quizz.phamelin.fr`) dans l'en-tête, et « portfolio » (`https://phamelin.fr/#projects`) dans le pied de page. Ce sont des `a[fdLink]` ; le lien des capitales est un arrêt de tabulation de plus, avant le sélecteur de thème et le lien de langue.
 - Après une réponse, le focus va sur « Drapeau suivant » ; après « suivant », sur la première proposition.
 - L'URL de la carte est construite uniquement depuis `countryName(code)`, jamais depuis une saisie : c'est ce qui justifie `bypassSecurityTrustResourceUrl` dans `map-panel.ts`.
 - **Tout texte visible passe par `LocaleService`** (`i18n.messages()`, `countryName`, `funFact`) : jamais de chaîne en dur dans un gabarit. Le français est à la racine, l'anglais sous `/en/` ; le même jeu de règles vaut dans les deux langues (rien ne donne la réponse avant le clic, verdict jamais par la couleur seule).
-- Un pays ajouté a une anecdote dans `data/` **et** dans `fun-facts.en.ts` ; un texte d'interface ajouté l'est dans `Messages` pour les deux langues (le compilateur et `messages.spec.ts` le vérifient).
+- Un pays ajouté a une astuce et une anecdote dans `data/` **et** dans `mnemonics.en.ts` et `fun-facts.en.ts` ; un texte d'interface ajouté l'est dans `Messages` pour les deux langues (le compilateur et `messages.spec.ts` le vérifient).
 - Changer l'`src` d'une iframe déjà chargée ajoute une entrée à l'historique : la carte est recréée (`@for … track`) quand son adresse change, sinon « Retour » annulerait la carte avant la langue.
 - Les noms de pays n'ont pas d'article (« Japon », pas « le Japon ») : les phrases sont tournées en conséquence (« La bonne réponse était : Japon »).
 
@@ -59,4 +61,13 @@ Voir `README.md` : installée depuis git (`prepare` construit la lib). La branch
 
 ## Contenu
 
-Les anecdotes sont rédigées à la main. Les vérifier avant d'en ajouter : un fait douteux ne vaut rien. `countries.spec.ts` impose 195 pays, des codes uniques, un drapeau, un nom et une anecdote pour chacun.
+Les astuces et les anecdotes sont rédigées à la main, en français dans la fiche et en anglais dans `mnemonics.en.ts` et `fun-facts.en.ts`. Les vérifier avant d'en ajouter : un fait douteux ne vaut rien.
+
+Une astuce suit l'une de ces deux techniques, ou les deux :
+
+- **Voir une image dans le drapeau** : un objet familier (le disque du Japon est le soleil levant, le Népal dessine l'Himalaya, la Suisse est une trousse de secours).
+- **Retenir la différence avec les drapeaux jumeaux** : un seul critère net (Irlande verte à la hampe, Côte d'Ivoire orange ; Monaco et Indonésie rouge en haut, Pologne l'inverse ; Australie à la grosse étoile en bas à gauche, comme la grosse île ; Nouvelle-Zélande à quatre étoiles rouges).
+
+Elle ne nomme les jumeaux que s'ils existent, vérifie chaque détail sur le drapeau (côté, ordre des bandes, nombre d'étoiles, couleur du disque et du fond : une astuce fausse est pire que pas d'astuce) et reste courte (une à deux phrases). Elle peut citer le pays, puisqu'elle n'apparaît qu'après la réponse. Pas d'apostrophe droite dans les textes : `countries.spec.ts` impose l'apostrophe typographique (’).
+
+`countries.spec.ts` impose 195 pays, des codes uniques, un drapeau, un nom, une astuce et une anecdote pour chacun dans chaque langue, sans astuce en double.

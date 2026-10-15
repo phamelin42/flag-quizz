@@ -12,9 +12,9 @@ describe('FlagPreloader', () => {
     vi.stubGlobal('Image', FakeImage);
     try {
       const preloader = TestBed.inject(FlagPreloader);
-      preloader.preload({ code: 'jp', funFact: '' });
-      preloader.preload({ code: 'jp', funFact: '' });
-      preloader.preload({ code: 'fr', funFact: '' });
+      preloader.preload({ code: 'jp', mnemonic: '', funFact: '' });
+      preloader.preload({ code: 'jp', mnemonic: '', funFact: '' });
+      preloader.preload({ code: 'fr', mnemonic: '', funFact: '' });
       expect(created).toEqual(['flags/4x3/jp.svg', 'flags/4x3/fr.svg']);
     } finally {
       vi.unstubAllGlobals();

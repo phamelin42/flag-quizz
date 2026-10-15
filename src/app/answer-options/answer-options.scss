@@ -1,7 +1,11 @@
+/* La colonne prend la hauteur du drapeau : les réponses restent en haut, le bouton « suivant » descend en bas. */
 .app-answer-options {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-4);
-  align-content: start;
+}
+.app-answer-options .app-next {
+  margin-top: auto;
 }
 .app-options {
   display: grid;

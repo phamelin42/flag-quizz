@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { countryName } from './data/country-name';
 import { FUN_FACTS_EN } from './data/fun-facts.en';
+import { MNEMONICS_EN } from './data/mnemonics.en';
 import { FlagPreloader } from './quiz/flag-preloader';
 import { COUNTRIES, QuizService, RANDOM } from './quiz/quiz.service';
 import { COUNTRY_LIST } from './data/countries';
@@ -53,6 +54,7 @@ describe('App', () => {
     expect(img.alt).toBe('Drapeau à deviner');
     expect(el.querySelector('iframe')).toBeNull();
     expect(el.textContent).not.toContain(quiz.question().country.funFact);
+    expect(el.textContent).not.toContain(quiz.question().country.mnemonic);
     expect(el.textContent).not.toContain('Drapeau suivant');
   });
 
@@ -69,12 +71,13 @@ describe('App', () => {
 
   it('n’affiche aucun encart avant la réponse', async () => {
     const { el } = await setup();
+    expect(el.querySelector('.app-mnemonic-panel')).toBeNull();
     expect(el.querySelector('.app-fun-fact')).toBeNull();
     expect(el.querySelector('.app-map-panel')).toBeNull();
     expect(el.querySelector('fd-alert')).toBeNull();
   });
 
-  it('valide une bonne réponse : verdict annoncé, anecdote, carte', async () => {
+  it('valide une bonne réponse : verdict annoncé, astuce, anecdote, carte', async () => {
     const { el, quiz, optionFor, settle } = await setup();
     const { country } = quiz.question();
     optionFor(country.code).click();
@@ -82,6 +85,7 @@ describe('App', () => {
 
     expect(el.querySelector('.app-status')!.textContent).toContain('Bonne réponse');
     expect(el.querySelector('fd-alert')).toBeNull();
+    expect(el.querySelector('.app-mnemonic-panel')!.textContent).toContain(country.mnemonic);
     expect(el.querySelector('.app-fun-fact')!.textContent).toContain(country.funFact);
     const iframe = el.querySelector<HTMLIFrameElement>('iframe.app-map')!;
     expect(new URL(iframe.src).searchParams.get('q')).toBe(countryName(country.code));
@@ -135,6 +139,7 @@ describe('App', () => {
 
     expect(quiz.question().country.code).not.toBe(first);
     expect(el.querySelector('iframe')).toBeNull();
+    expect(el.querySelector('.app-mnemonic-panel')).toBeNull();
     expect(el.querySelector('.app-fun-fact')).toBeNull();
     expect(el.querySelector('.app-status')!.textContent!.trim()).toBe('');
     expect(el.textContent).not.toContain('Drapeau suivant');
@@ -152,6 +157,26 @@ describe('App', () => {
     await settle();
     expect(document.activeElement).toBe(options()[0]);
     el.remove();
+  });
+
+  it('propose un lien vers le quiz des capitales', async () => {
+    const { el } = await setup();
+    const link = el.querySelector<HTMLAnchorElement>(
+      'nav a[href="https://capitals-quizz.phamelin.fr"]',
+    )!;
+    expect(link.textContent!.trim()).toBe('Quiz des capitales');
+    expect(link.closest('nav')!.getAttribute('aria-label')).toBe('Autres quiz');
+  });
+
+  it('propose en bas de page un lien vers le portfolio, ancre projects', async () => {
+    const { el } = await setup();
+    const footer = el.querySelector('footer')!;
+    expect(footer.textContent!.replace(/\s+/g, ' ').trim()).toBe(
+      'Vous voulez en voir plus ? Visitez mon portfolio',
+    );
+    const link = footer.querySelector<HTMLAnchorElement>('a')!;
+    expect(link.textContent!.trim()).toBe('portfolio');
+    expect(link.getAttribute('href')).toBe('https://phamelin.fr/#projects');
   });
 
   it('bascule le thème Nuit', async () => {
@@ -192,6 +217,10 @@ describe('App', () => {
       expect(el.querySelector('.app-status')!.textContent).toContain(
         `Correct: ${countryName(country.code, 'en')}.`,
       );
+      expect(el.querySelector('.app-mnemonic-panel')!.textContent).toContain(
+        MNEMONICS_EN[country.code],
+      );
+      expect(el.querySelector('.app-mnemonic-panel')!.textContent).toContain('Tip');
       expect(el.querySelector('.app-fun-fact')!.textContent).toContain(FUN_FACTS_EN[country.code]);
       const iframe = el.querySelector<HTMLIFrameElement>('iframe.app-map')!;
       expect(new URL(iframe.src).searchParams.get('hl')).toBe('en');
@@ -203,6 +232,22 @@ describe('App', () => {
       expect(link(el).textContent).toContain('Français');
     });
 
+    it('traduit le lien des capitales et le pied de page, vers les mêmes adresses', async () => {
+      const { el, settle } = await setup();
+      link(el).click();
+      await settle();
+
+      const capitals = el.querySelector<HTMLAnchorElement>('nav a')!;
+      expect(capitals.textContent!.trim()).toBe('Capitals quiz');
+      expect(capitals.getAttribute('href')).toBe('https://capitals-quizz.phamelin.fr');
+      expect(capitals.closest('nav')!.getAttribute('aria-label')).toBe('Other quizzes');
+      const footer = el.querySelector('footer')!;
+      expect(footer.textContent!.replace(/\s+/g, ' ').trim()).toBe(
+        'Want to see more? Visit my portfolio',
+      );
+      expect(footer.querySelector('a')!.getAttribute('href')).toBe('https://phamelin.fr/#projects');
+    });
+
     it('garde le nom du pays secret en anglais avant la réponse', async () => {
       const { el, quiz, settle } = await setup();
       link(el).click();
@@ -210,6 +255,7 @@ describe('App', () => {
 
       expect(el.querySelector('.app-flag')!.getAttribute('alt')).toBe('Flag to guess');
       expect(el.textContent).not.toContain(FUN_FACTS_EN[quiz.question().country.code]);
+      expect(el.textContent).not.toContain(MNEMONICS_EN[quiz.question().country.code]);
       expect(el.querySelector('iframe')).toBeNull();
     });
 

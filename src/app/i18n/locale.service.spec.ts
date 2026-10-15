@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { COUNTRY_LIST } from '../data/countries';
 import { FUN_FACTS_EN } from '../data/fun-facts.en';
+import { MNEMONICS_EN } from '../data/mnemonics.en';
 import { INITIAL_LOCALE, LocaleService } from './locale.service';
 import { Locale } from './locale';
 
@@ -73,5 +74,14 @@ describe('LocaleService', () => {
     expect(service.countryName('jp')).toBe('Japan');
     expect(service.funFact(france)).toBe(FUN_FACTS_EN['fr']);
     expect(service.funFact(france)).not.toBe(france.funFact);
+  });
+
+  it('donne l’astuce du pays dans la langue courante', () => {
+    const service = setup('fr');
+    expect(service.mnemonic(france)).toBe(france.mnemonic);
+
+    service.switchTo('en');
+    expect(service.mnemonic(france)).toBe(MNEMONICS_EN['fr']);
+    expect(service.mnemonic(france)).not.toBe(france.mnemonic);
   });
 });

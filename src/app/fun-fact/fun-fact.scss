@@ -1,3 +1,7 @@
+/* Le cadre prend toute la hauteur que lui laisse la colonne des astuces (voir app.scss). */
 .app-fun-fact {
-  display: block;
+  display: flex;
+}
+.app-fun-fact .fd-card {
+  flex: 1;
 }

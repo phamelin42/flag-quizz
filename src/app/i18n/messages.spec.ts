@@ -29,4 +29,12 @@ describe('MESSAGES', () => {
       'Wrong answer. The correct answer was: Japan.',
     );
   });
+
+  it('nomme le lien du portfolio et la navigation vers les autres quiz, dans chaque langue', () => {
+    expect(MESSAGES.fr.portfolioPrompt).toBe('Vous voulez en voir plus ? Visitez mon');
+    expect(MESSAGES.fr.portfolioLink).toBe('portfolio');
+    expect(MESSAGES.fr.capitalsQuiz).toBe('Quiz des capitales');
+    expect(MESSAGES.en.portfolioPrompt).toBe('Want to see more? Visit my');
+    expect(MESSAGES.en.capitalsQuiz).toBe('Capitals quiz');
+  });
 });

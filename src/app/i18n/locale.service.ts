@@ -11,6 +11,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Country } from '../data/country';
 import { countryName } from '../data/country-name';
 import { FUN_FACTS_EN } from '../data/fun-facts.en';
+import { MNEMONICS_EN } from '../data/mnemonics.en';
 import { Locale, localeFromPath, pathFor } from './locale';
 import { MESSAGES } from './messages';
 import seo from './seo.json';
@@ -66,5 +67,11 @@ export class LocaleService {
     return this.locale() === 'en'
       ? (FUN_FACTS_EN[country.code] ?? country.funFact)
       : country.funFact;
+  }
+
+  mnemonic(country: Country): string {
+    return this.locale() === 'en'
+      ? (MNEMONICS_EN[country.code] ?? country.mnemonic)
+      : country.mnemonic;
   }
 }

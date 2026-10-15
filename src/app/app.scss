@@ -36,15 +36,35 @@
 .app-play {
   display: grid;
   gap: var(--space-6);
-  align-items: start;
+  align-items: stretch;
 }
-/* Le pied de page reste en bas de l'écran : anecdote à gauche, carte à droite. */
+/*
+ * Le bas de la page reste en bas de l'écran : astuce et anecdote à gauche, carte à droite.
+ * Les deux colonnes ont la même hauteur : les cadres de gauche se la partagent, la carte s'étire avec elle.
+ */
 .app-bottom {
   display: grid;
   animation: fd-fade var(--duration-base) var(--ease-kaze);
   gap: var(--space-6);
   margin-top: auto;
-  align-items: start;
+  align-items: stretch;
+}
+.app-hints {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.app-hints > * {
+  flex: 1;
+}
+/* En bas de page, sous le contenu qui occupe tout l'écran. */
+.app-footer {
+  padding-block: var(--space-4);
+  text-align: center;
+  color: var(--ink-muted);
+}
+.app-footer p {
+  margin: 0;
 }
 @media (min-width: 48rem) {
   .app {

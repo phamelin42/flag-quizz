@@ -14,6 +14,9 @@
     </li>
   </ul>
   <div class="app-settings">
+    <nav [attr.aria-label]="i18n.messages().otherQuizzesLabel">
+      <a fdLink href="https://capitals-quizz.phamelin.fr">{{ i18n.messages().capitalsQuiz }}</a>
+    </nav>
     <fd-switch [checked]="isDark()" (checkedChange)="setDark($event)">{{
       i18n.messages().darkTheme
     }}</fd-switch>
@@ -35,11 +38,21 @@
     <app-answer-options />
   </section>
 
-  <!-- Rien ne s'affiche avant la réponse : l'anecdote et la carte donneraient la solution. -->
+  <!-- Rien ne s'affiche avant la réponse : l'astuce, l'anecdote et la carte donneraient la solution. -->
   @if (quiz.isAnswered()) {
     <div class="app-bottom">
-      <app-fun-fact [country]="quiz.question().country" />
+      <div class="app-hints">
+        <app-mnemonic-panel [country]="quiz.question().country" />
+        <app-fun-fact [country]="quiz.question().country" />
+      </div>
       <app-map-panel [country]="quiz.question().country" />
     </div>
   }
 </main>
+
+<footer class="app-footer">
+  <p>
+    {{ i18n.messages().portfolioPrompt }}
+    <a fdLink href="https://phamelin.fr/#projects">{{ i18n.messages().portfolioLink }}</a>
+  </p>
+</footer>

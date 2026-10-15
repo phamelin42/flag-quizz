@@ -4,7 +4,8 @@ Un quiz de drapeaux en Angular, construit avec le design system [Fuda](https://g
 
 - Un drapeau s'affiche, quatre pays sont proposés, un seul est le bon.
 - Un clic valide ou non la réponse. Le score, la série en cours et le record s'affichent en haut.
-- Une fois la réponse donnée apparaissent **une anecdote** sur le drapeau (en bas à gauche) et **la carte Google Maps** du pays (en bas à droite). Avant, aucun de ces encarts n'est affiché.
+- Une fois la réponse donnée apparaissent **une astuce** pour reconnaître le drapeau (une image à y voir, ou la différence avec un drapeau jumeau) et **une anecdote**, en bas à gauche, ainsi que **la carte Google Maps** du pays, en bas à droite. Avant, aucun de ces encarts n'est affiché.
+- Un lien en en-tête mène au [quiz des capitales](https://capitals-quizz.phamelin.fr), un autre en pied de page à mon [portfolio](https://phamelin.fr/#projects).
 - Les 195 pays (193 membres de l'ONU, le Vatican et la Palestine) sont tirés dans un ordre mélangé, sans répétition jusqu'à épuisement, puis le paquet est refait.
 - Deux langues : le français à la racine (`/`), l'anglais sous `/en/`. Un lien dans l'en-tête bascule sans recharger : la partie en cours continue et l'adresse suit (retour arrière compris).
 - Thème Jour par défaut, thème Nuit au choix du joueur. Clavier complet, WCAG 2.2 AA vérifié par axe.
@@ -46,12 +47,12 @@ La carte est une iframe `https://www.google.com/maps?q=<pays>&output=embed&hl=fr
 La langue vient de l'adresse (`localeFromPath`) : `/en` et `/en/…` sont en anglais, le reste en français. Il n'y a pas de détection de la langue du navigateur.
 
 - `src/app/i18n/messages.ts` : tous les textes de l'interface, par langue (le type `Messages` oblige à les fournir dans les deux).
-- `src/app/i18n/locale.service.ts` : la langue courante (signal), `<html lang>`, titre et description de la page, nom et anecdote d'un pays dans la langue.
+- `src/app/i18n/locale.service.ts` : la langue courante (signal), `<html lang>`, titre et description de la page, nom, astuce et anecdote d'un pays dans la langue.
 - `src/app/i18n/seo.json` : titre et description par langue. `tools/localize-index.mjs`, lancé par `npm run build`, en tire `en/index.html` (même appli, mais `lang`, titre et description déjà anglais). `vercel.json` renvoie `/en` vers cette page.
 - La carte Google Maps est demandée dans la langue du site (`hl`).
 
-Ajouter une langue : l'ajouter à `Locale` et `localeFromPath`, fournir ses `Messages`, ses noms de pays (`country-name.ts`) et ses anecdotes, puis `seo.json`.
+Ajouter une langue : l'ajouter à `Locale` et `localeFromPath`, fournir ses `Messages`, ses noms de pays (`country-name.ts`), ses astuces et ses anecdotes, puis `seo.json`.
 
 ## Ajouter ou corriger un pays
 
-Les fiches sont dans `src/app/data/` (un fichier par continent) : code ISO en minuscules et anecdote française ; l'anecdote anglaise va dans `fun-facts.en.ts`, sous le même code. Les noms viennent de `Intl.DisplayNames`, par langue (surcharges dans `country-name.ts`). Les drapeaux viennent de [flag-icons](https://github.com/lipis/flag-icons) (`flags/4x3/<code>.svg`). `countries.spec.ts` vérifie que chaque fiche a un drapeau, un nom et une anecdote dans chaque langue.
+Les fiches sont dans `src/app/data/` (un fichier par continent) : code ISO en minuscules, astuce et anecdote françaises ; l'astuce anglaise va dans `mnemonics.en.ts` et l'anecdote anglaise dans `fun-facts.en.ts`, sous le même code. Les noms viennent de `Intl.DisplayNames`, par langue (surcharges dans `country-name.ts`). Les drapeaux viennent de [flag-icons](https://github.com/lipis/flag-icons) (`flags/4x3/<code>.svg`). `countries.spec.ts` vérifie que chaque fiche a un drapeau, un nom, une astuce et une anecdote dans chaque langue.
