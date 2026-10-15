@@ -17,12 +17,20 @@ export interface Messages {
   readonly flagQuestion: string;
   readonly flagToGuess: string;
   readonly flagOf: (countryName: string) => string;
+  readonly hintBadge: string;
+  readonly mnemonicTitle: string;
   readonly didYouKnow: string;
   readonly factTitle: string;
   readonly mapTitle: string;
   readonly mapFrameTitle: (countryName: string) => string;
   /** Langue de l'interface de Google Maps (paramètre `hl`). */
   readonly mapLanguage: string;
+  /** Étiquette de la navigation vers les autres quiz du même auteur. */
+  readonly otherQuizzesLabel: string;
+  readonly capitalsQuiz: string;
+  /** Phrase qui précède le lien vers le portfolio, en pied de page. */
+  readonly portfolioPrompt: string;
+  readonly portfolioLink: string;
 }
 
 const fr: Messages = {
@@ -41,11 +49,17 @@ const fr: Messages = {
   flagQuestion: 'Quel est ce drapeau ?',
   flagToGuess: 'Drapeau à deviner',
   flagOf: (name) => `Drapeau : ${name}`,
+  hintBadge: 'Astuce',
+  mnemonicTitle: 'Comment le reconnaître',
   didYouKnow: 'Le saviez-vous ?',
   factTitle: 'Un bout d’histoire',
   mapTitle: 'Où se trouve ce pays ?',
   mapFrameTitle: (name) => `Carte Google Maps : ${name}`,
   mapLanguage: 'fr',
+  otherQuizzesLabel: 'Autres quiz',
+  capitalsQuiz: 'Quiz des capitales',
+  portfolioPrompt: 'Vous voulez en voir plus ? Visitez mon',
+  portfolioLink: 'portfolio',
 };
 
 const en: Messages = {
@@ -64,11 +78,17 @@ const en: Messages = {
   flagQuestion: 'Which flag is this?',
   flagToGuess: 'Flag to guess',
   flagOf: (name) => `Flag of ${name}`,
+  hintBadge: 'Tip',
+  mnemonicTitle: 'How to recognize it',
   didYouKnow: 'Did you know?',
   factTitle: 'A bit of history',
   mapTitle: 'Where is this country?',
   mapFrameTitle: (name) => `Google Maps: ${name}`,
   mapLanguage: 'en',
+  otherQuizzesLabel: 'Other quizzes',
+  capitalsQuiz: 'Capitals quiz',
+  portfolioPrompt: 'Want to see more? Visit my',
+  portfolioLink: 'portfolio',
 };
 
 export const MESSAGES: Readonly<Record<Locale, Messages>> = { fr, en };

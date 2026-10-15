@@ -1,6 +1,7 @@
 import flagIcons from 'flag-icons/country.json';
 import { COUNTRY_LIST } from './countries';
 import { FUN_FACTS_EN } from './fun-facts.en';
+import { MNEMONICS_EN } from './mnemonics.en';
 import { countryName } from './country-name';
 
 const available = new Set(flagIcons.filter((flag) => flag.iso).map((flag) => flag.code));
@@ -38,6 +39,32 @@ describe('COUNTRY_LIST', () => {
       const english = FUN_FACTS_EN[code];
       expect(english.trim().length, `anecdote anglaise de ${code}`).toBeGreaterThan(20);
       expect(english, `anecdote anglaise de ${code}`).not.toBe(funFact);
+    }
+  });
+
+  it('a une astuce rédigée pour chaque pays, sans doublon', () => {
+    for (const { code, mnemonic } of COUNTRY_LIST) {
+      expect(mnemonic.trim().length, `astuce de ${code}`).toBeGreaterThan(20);
+    }
+    const mnemonics = COUNTRY_LIST.map(({ mnemonic }) => mnemonic);
+    expect(new Set(mnemonics).size).toBe(mnemonics.length);
+  });
+
+  it('a une astuce anglaise pour chaque pays, et aucune en trop', () => {
+    expect(Object.keys(MNEMONICS_EN).sort()).toEqual(COUNTRY_LIST.map((c) => c.code).sort());
+    for (const { code, mnemonic } of COUNTRY_LIST) {
+      const english = MNEMONICS_EN[code];
+      expect(english.trim().length, `astuce anglaise de ${code}`).toBeGreaterThan(20);
+      expect(english, `astuce anglaise de ${code}`).not.toBe(mnemonic);
+    }
+    const english = Object.values(MNEMONICS_EN);
+    expect(new Set(english).size).toBe(english.length);
+  });
+
+  it('écrit les apostrophes de façon typographique, dans toutes les langues', () => {
+    for (const { code, mnemonic, funFact } of COUNTRY_LIST) {
+      const texts = [mnemonic, funFact, MNEMONICS_EN[code], FUN_FACTS_EN[code]].join(' ');
+      expect(texts, `apostrophe droite dans ${code}`).not.toContain("'");
     }
   });
 
