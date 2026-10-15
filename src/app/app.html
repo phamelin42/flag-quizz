@@ -1,17 +1,32 @@
 <header class="app-header">
   <h1 class="app-title">Flag Quizz</h1>
-  <ul class="app-stats" aria-label="Ton score">
+  <ul class="app-stats" [attr.aria-label]="i18n.messages().scoreLabel">
     <li>
-      <fd-badge tone="sakura" soft>Score {{ quiz.score() }} / {{ quiz.asked() }}</fd-badge>
+      <fd-badge tone="sakura" soft>{{
+        i18n.messages().score(quiz.score(), quiz.asked())
+      }}</fd-badge>
     </li>
     <li>
-      <fd-badge tone="yamabuki" soft>Série {{ quiz.streak() }}</fd-badge>
+      <fd-badge tone="yamabuki" soft>{{ i18n.messages().streak(quiz.streak()) }}</fd-badge>
     </li>
     <li>
-      <fd-badge>Record {{ quiz.bestStreak() }}</fd-badge>
+      <fd-badge>{{ i18n.messages().record(quiz.bestStreak()) }}</fd-badge>
     </li>
   </ul>
-  <fd-switch [checked]="isDark()" (checkedChange)="setDark($event)">Thème nuit</fd-switch>
+  <div class="app-settings">
+    <fd-switch [checked]="isDark()" (checkedChange)="setDark($event)">{{
+      i18n.messages().darkTheme
+    }}</fd-switch>
+    <a
+      fdLink
+      class="app-language"
+      [href]="i18n.otherLocaleHref()"
+      [attr.lang]="i18n.otherLocale()"
+      [attr.hreflang]="i18n.otherLocale()"
+      (click)="switchLanguage($event)"
+      >{{ i18n.messages().otherLanguageName }}</a
+    >
+  </div>
 </header>
 
 <main class="app-main">

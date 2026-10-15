@@ -10,7 +10,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FdButton, FdIcon } from 'fuda';
-import { countryName } from '../data/country-name';
+import { LocaleService } from '../i18n/locale.service';
 import { QuizService } from '../quiz/quiz.service';
 
 type OptionState = 'idle' | 'correct' | 'wrong' | 'dimmed';
@@ -26,12 +26,11 @@ type OptionState = 'idle' | 'correct' | 'wrong' | 'dimmed';
 })
 export class AnswerOptions {
   protected readonly quiz = inject(QuizService);
+  protected readonly i18n = inject(LocaleService);
   private readonly injector = inject(Injector);
 
   private readonly optionButtons = viewChildren('option', { read: ElementRef<HTMLButtonElement> });
   private readonly nextButton = viewChild('nextBtn', { read: ElementRef<HTMLButtonElement> });
-
-  protected readonly name = countryName;
 
   /** État visuel de chaque proposition : le verdict ne repose jamais sur la couleur seule (icône + texte masqué). */
   protected readonly states = computed(() => {

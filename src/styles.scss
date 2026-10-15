@@ -1,1 +1,52 @@
 /* Les fondations de Fuda (tokens, reset, mouvement réduit) et les polices sont chargées par angular.json. */
+
+/*
+ * Fond de page : deux halos (sakura en haut à gauche, yamabuki en bas à droite) et des vagues seigaiha
+ * très discrètes, estompées au centre pour ne pas concurrencer le jeu. Tout vient des tokens Fuda,
+ * donc le thème Nuit suit sans règle en plus.
+ */
+body {
+  --app-wave: color-mix(in srgb, var(--line) 70%, transparent);
+  background-color: var(--surface);
+  background-image:
+    radial-gradient(ellipse 60% 50% at 50% 42%, var(--surface), transparent),
+    radial-gradient(
+      circle at 0 0,
+      color-mix(in srgb, var(--sakura-soft) 85%, transparent),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      color-mix(in srgb, var(--yamabuki-soft) 70%, transparent),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      transparent 0 52%,
+      var(--app-wave) 53% 56%,
+      transparent 57% 70%,
+      var(--app-wave) 71% 74%,
+      transparent 75%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      transparent 0 52%,
+      var(--app-wave) 53% 56%,
+      transparent 57% 70%,
+      var(--app-wave) 71% 74%,
+      transparent 75%
+    );
+  background-size:
+    auto,
+    auto,
+    auto,
+    var(--space-12) var(--space-6),
+    var(--space-12) var(--space-6);
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    var(--space-6) var(--space-3);
+  background-attachment: fixed, fixed, fixed, scroll, scroll;
+}

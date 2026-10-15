@@ -10,6 +10,10 @@ describe('mapUrl', () => {
     expect(url.searchParams.get('hl')).toBe('fr');
   });
 
+  it('demande la carte dans la langue du site', () => {
+    expect(new URL(mapUrl('Japan', 'en')).searchParams.get('hl')).toBe('en');
+  });
+
   it('encode les caractères spéciaux du nom', () => {
     const url = mapUrl('Côte d’Ivoire & co/?#');
     expect(new URL(url).searchParams.get('q')).toBe('Côte d’Ivoire & co/?#');

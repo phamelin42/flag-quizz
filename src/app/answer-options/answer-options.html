@@ -1,4 +1,4 @@
-<div class="app-options" role="group" aria-label="Choisis le pays de ce drapeau">
+<div class="app-options" role="group" [attr.aria-label]="i18n.messages().chooseCountry">
   @for (option of quiz.question().options; track option.code) {
     @let state = states()[option.code];
     <button
@@ -15,11 +15,11 @@
       } @else if (state === 'wrong') {
         <svg fdIcon="close"></svg>
       }
-      {{ name(option.code) }}
+      {{ i18n.countryName(option.code) }}
       @if (state === 'correct') {
-        <span class="fd-sr">, bonne réponse</span>
+        <span class="fd-sr">{{ i18n.messages().correctAnswerSr }}</span>
       } @else if (state === 'wrong') {
-        <span class="fd-sr">, ta réponse, incorrecte</span>
+        <span class="fd-sr">{{ i18n.messages().wrongAnswerSr }}</span>
       }
     </button>
   }
@@ -28,14 +28,13 @@
 <!-- Le verdict n'a pas d'encart : la couleur et l'icône des boutons le montrent, ce texte l'annonce. -->
 <p class="fd-sr app-status" aria-live="polite">
   @if (quiz.isAnswered()) {
-    {{ quiz.isCorrect() ? 'Bonne réponse' : 'Mauvaise réponse. La bonne réponse était' }} :
-    {{ name(quiz.question().country.code) }}.
+    {{ i18n.messages().verdict(quiz.isCorrect(), i18n.countryName(quiz.question().country.code)) }}
   }
 </p>
 
 @if (quiz.isAnswered()) {
   <button #nextBtn fdButton size="lg" block (click)="next()">
-    Drapeau suivant
+    {{ i18n.messages().nextFlag }}
     <svg fdIcon="chevron-right"></svg>
   </button>
 }

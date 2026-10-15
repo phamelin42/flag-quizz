@@ -3,5 +3,11 @@
   "framework": null,
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/flag-quizz/browser"
+  "outputDirectory": "dist/flag-quizz/browser",
+  "rewrites": [
+    {
+      "source": "/en",
+      "destination": "/en/index.html"
+    }
+  ]
 }

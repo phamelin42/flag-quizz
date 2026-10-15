@@ -1,14 +1,26 @@
 import { expect, Page } from '@playwright/test';
 
-const names = new Intl.DisplayNames(['fr'], { type: 'region' });
-const OVERRIDES: Record<string, string> = { va: 'Vatican', ps: 'Palestine' };
+export type Locale = 'fr' | 'en';
 
-export function nameOf(code: string): string {
-  return OVERRIDES[code] ?? names.of(code.toUpperCase())!;
+const names = {
+  fr: new Intl.DisplayNames(['fr'], { type: 'region' }),
+  en: new Intl.DisplayNames(['en'], { type: 'region' }),
+};
+const OVERRIDES: Record<Locale, Record<string, string>> = {
+  fr: { va: 'Vatican', ps: 'Palestine' },
+  en: { cd: 'DR Congo', cg: 'Republic of the Congo', mm: 'Myanmar', ps: 'Palestine' },
+};
+
+export function nameOf(code: string, locale: Locale = 'fr'): string {
+  return OVERRIDES[locale][code] ?? names[locale].of(code.toUpperCase())!;
 }
 
 /** Google n'est pas contacté pendant les tests : l'iframe reçoit une page vide. */
-export async function openQuiz(page: Page, theme: 'light' | 'dark' = 'light'): Promise<void> {
+export async function openQuiz(
+  page: Page,
+  theme: 'light' | 'dark' = 'light',
+  locale: Locale = 'fr',
+): Promise<void> {
   await page.route('https://www.google.com/**', (route) =>
     route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>carte</title>' }),
   );
@@ -18,7 +30,7 @@ export async function openQuiz(page: Page, theme: 'light' | 'dark' = 'light'): P
       if (!localStorage.getItem('fuda-theme')) localStorage.setItem('fuda-theme', 'dark');
     });
   }
-  await page.goto('/');
+  await page.goto(locale === 'en' ? '/en/' : '/');
   await expect(page.locator('.app-option')).toHaveCount(4);
 }
 
@@ -28,9 +40,9 @@ export async function currentCode(page: Page): Promise<string> {
   return /flags\/4x3\/([a-z]{2})\.svg/.exec(src ?? '')![1];
 }
 
-export async function answer(page: Page, correct: boolean): Promise<string> {
+export async function answer(page: Page, correct: boolean, locale: Locale = 'fr'): Promise<string> {
   const code = await currentCode(page);
-  const good = nameOf(code);
+  const good = nameOf(code, locale);
   const options = page.locator('.app-option');
   const texts = await options.allInnerTexts();
   const index = texts.findIndex((text) => (text.trim() === good) === correct);

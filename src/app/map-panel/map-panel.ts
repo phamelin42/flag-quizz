@@ -2,7 +2,7 @@ import { Component, computed, inject, input, ViewEncapsulation } from '@angular/
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FdCard } from 'fuda';
 import { Country } from '../data/country';
-import { countryName } from '../data/country-name';
+import { LocaleService } from '../i18n/locale.service';
 import { mapUrl } from './map-url';
 
 /**
@@ -21,10 +21,13 @@ export class MapPanel {
   readonly country = input.required<Country>();
 
   private readonly sanitizer = inject(DomSanitizer);
+  protected readonly i18n = inject(LocaleService);
 
-  protected readonly name = computed(() => countryName(this.country().code));
-  /** L'URL est construite uniquement à partir de nos données (`countryName`), donc sûre à approuver. */
+  protected readonly name = computed(() => this.i18n.countryName(this.country().code));
+  /** L'URL est construite uniquement à partir de nos données (`countryName`, `mapLanguage`), donc sûre à approuver. */
   protected readonly src = computed<SafeResourceUrl>(() =>
-    this.sanitizer.bypassSecurityTrustResourceUrl(mapUrl(this.name())),
+    this.sanitizer.bypassSecurityTrustResourceUrl(
+      mapUrl(this.name(), this.i18n.messages().mapLanguage),
+    ),
   );
 }
