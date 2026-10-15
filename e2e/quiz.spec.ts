@@ -22,8 +22,8 @@ test('une bonne réponse valide le pays et révèle astuce, anecdote et carte', 
   const iframe = page.locator('iframe.app-map');
   await expect(iframe).toBeVisible();
   const src = new URL((await iframe.getAttribute('src'))!);
-  expect(src.hostname).toBe('www.google.com');
-  expect(src.searchParams.get('q')).toBe(nameOf(code));
+  expect(src.hostname).toBe('www.openstreetmap.org');
+  expect(src.searchParams.get('bbox')).toMatch(/^-?[\d.]+(,-?[\d.]+){3}$/);
   await expect(page.locator('.app-flag')).toHaveAttribute('alt', `Drapeau : ${nameOf(code)}`);
 });
 
@@ -243,8 +243,7 @@ test.describe('version anglaise', () => {
     await expect(page.locator('.app-mnemonic-panel .fd-card__text')).toHaveText(MNEMONICS_EN[code]);
     await expect(page.locator('.app-fun-fact .fd-card__text')).toHaveText(FUN_FACTS_EN[code]);
     const src = new URL((await page.locator('iframe.app-map').getAttribute('src'))!);
-    expect(src.searchParams.get('q')).toBe(nameOf(code, 'en'));
-    expect(src.searchParams.get('hl')).toBe('en');
+    expect(src.hostname).toBe('www.openstreetmap.org');
 
     await page.getByRole('button', { name: 'Next flag' }).click();
     await expect(page.locator('.app-flag')).not.toHaveAttribute('src', `flags/4x3/${code}.svg`);

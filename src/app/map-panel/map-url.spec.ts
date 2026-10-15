@@ -1,22 +1,35 @@
+import { COUNTRY_LIST } from '../data/countries';
+import { COUNTRY_BOUNDS } from '../data/country-bounds';
 import { mapUrl } from './map-url';
 
 describe('mapUrl', () => {
-  it('construit l’URL d’intégration Google Maps en français', () => {
-    const url = new URL(mapUrl('Japon'));
-    expect(url.origin).toBe('https://www.google.com');
-    expect(url.pathname).toBe('/maps');
-    expect(url.searchParams.get('q')).toBe('Japon');
-    expect(url.searchParams.get('output')).toBe('embed');
-    expect(url.searchParams.get('hl')).toBe('fr');
+  it('construit l’URL d’intégration OpenStreetMap, cadrée sur le pays', () => {
+    const url = new URL(mapUrl('jp'));
+    expect(url.origin).toBe('https://www.openstreetmap.org');
+    expect(url.pathname).toBe('/export/embed.html');
+    expect(url.searchParams.get('layer')).toBe('mapnik');
+    expect(url.searchParams.get('bbox')).toBe(COUNTRY_BOUNDS['jp'].join(','));
   });
 
-  it('demande la carte dans la langue du site', () => {
-    expect(new URL(mapUrl('Japan', 'en')).searchParams.get('hl')).toBe('en');
+  it('pose un marqueur sur un petit pays, pas sur un grand', () => {
+    expect(new URL(mapUrl('mc')).searchParams.get('marker')).toMatch(/^43\.\d+,7\.\d+$/);
+    expect(new URL(mapUrl('ru')).searchParams.has('marker')).toBe(false);
   });
 
-  it('encode les caractères spéciaux du nom', () => {
-    const url = mapUrl('Côte d’Ivoire & co/?#');
-    expect(new URL(url).searchParams.get('q')).toBe('Côte d’Ivoire & co/?#');
-    expect(new URL(url).hash).toBe('');
+  it('refuse un pays sans cadre', () => {
+    expect(() => mapUrl('zz')).toThrow();
+  });
+
+  it('a un cadre cohérent pour chacun des pays du quiz', () => {
+    for (const { code } of COUNTRY_LIST) {
+      const [west, south, east, north] = COUNTRY_BOUNDS[code];
+      expect(west, code).toBeLessThan(east);
+      expect(south, code).toBeLessThan(north);
+      expect(west, code).toBeGreaterThanOrEqual(-180);
+      expect(east, code).toBeLessThanOrEqual(180);
+      expect(south, code).toBeGreaterThanOrEqual(-85);
+      expect(north, code).toBeLessThanOrEqual(85);
+    }
+    expect(Object.keys(COUNTRY_BOUNDS)).toHaveLength(COUNTRY_LIST.length);
   });
 });
