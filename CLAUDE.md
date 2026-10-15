@@ -16,6 +16,8 @@ Node ≥ 22.22.3 (exigé par Angular 22).
 
 Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts, et `e2e` si l'interface, le clavier ou le focus changent.
 
+**Toute modification de code finit par une PR** : on commit, on pousse la branche de travail, puis on ouvre la PR vers `main` sans attendre qu'on la demande (après vérification qu'il n'en existe pas déjà une ouverte pour cette branche). Une PR déjà fusionnée ne suit plus la branche : le travail suivant repart de `main` et ouvre une nouvelle PR.
+
 ## Structure
 
 - `src/app/data/` : une fiche par pays (`code`, `mnemonic`, `funFact`), un fichier par continent, assemblées dans `countries.ts`. Le nom français vient de `Intl.DisplayNames` (`country-name.ts`). Les drapeaux sont les SVG de `flag-icons`, copiés dans `flags/4x3/` par `angular.json`.
