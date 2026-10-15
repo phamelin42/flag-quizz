@@ -1,0 +1,27 @@
+name: Proposer une astuce
+description: Une meilleure astuce (moyen mnémotechnique) pour reconnaître un drapeau.
+labels: ['astuce']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Une astuce **associe** un détail du drapeau à une image de la vie réelle, ou le **compare** à un autre drapeau.
+        Elle ne se contente pas de décrire ce qu’on voit. Une ou deux phrases, 200 caractères au plus.
+  - type: input
+    id: country
+    attributes:
+      label: Pays
+    validations:
+      required: true
+  - type: textarea
+    id: tip
+    attributes:
+      label: Votre astuce
+      description: En français ou en anglais.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Pourquoi est-elle meilleure ?
+      description: Facultatif.

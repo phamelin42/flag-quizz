@@ -14,9 +14,6 @@
     </li>
   </ul>
   <div class="app-settings">
-    <nav [attr.aria-label]="i18n.messages().otherQuizzesLabel">
-      <a fdLink href="https://capitals-quizz.phamelin.fr">{{ i18n.messages().capitalsQuiz }}</a>
-    </nav>
     <fd-switch [checked]="isDark()" (checkedChange)="setDark($event)">{{
       i18n.messages().darkTheme
     }}</fd-switch>
@@ -51,8 +48,11 @@
 </main>
 
 <footer class="app-footer">
-  <p>
+  <p class="app-footer-line">
     {{ i18n.messages().portfolioPrompt }}
     <a fdLink href="https://phamelin.fr/#projects">{{ i18n.messages().portfolioLink }}</a>
   </p>
+  <nav [attr.aria-label]="i18n.messages().otherQuizzesLabel">
+    <a fdLink href="https://capitals-quizz.phamelin.fr">{{ i18n.messages().capitalsQuiz }}</a>
+  </nav>
 </footer>
