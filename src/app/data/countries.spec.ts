@@ -25,9 +25,21 @@ describe('COUNTRY_LIST', () => {
     expect(missing).toEqual([]);
   });
 
-  it('a une anecdote rédigée pour chaque pays', () => {
-    for (const { code, funFact } of COUNTRY_LIST) {
+  it('a une astuce et une anecdote rédigées pour chaque pays', () => {
+    for (const { code, mnemonic, funFact } of COUNTRY_LIST) {
+      expect(mnemonic.trim().length, `astuce de ${code}`).toBeGreaterThan(20);
       expect(funFact.trim().length, `anecdote de ${code}`).toBeGreaterThan(20);
+    }
+  });
+
+  it('n’a pas deux fois la même astuce', () => {
+    const mnemonics = COUNTRY_LIST.map(({ mnemonic }) => mnemonic);
+    expect(new Set(mnemonics).size).toBe(mnemonics.length);
+  });
+
+  it('écrit les apostrophes de façon typographique', () => {
+    for (const { code, mnemonic, funFact } of COUNTRY_LIST) {
+      expect(`${mnemonic}${funFact}`, `apostrophe droite dans ${code}`).not.toContain("'");
     }
   });
 

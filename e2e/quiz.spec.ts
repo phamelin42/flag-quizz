@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { answer, currentCode, nameOf, openQuiz } from './helpers';
 
-test('une bonne réponse valide le pays et révèle anecdote et carte', async ({ page }) => {
+test('une bonne réponse valide le pays et révèle astuce, anecdote et carte', async ({ page }) => {
   await openQuiz(page);
   await expect(page.locator('iframe')).toHaveCount(0);
+  await expect(page.locator('.app-mnemonic-panel')).toHaveCount(0);
   await expect(page.locator('.app-fun-fact')).toHaveCount(0);
   await expect(page.locator('.app-map-panel')).toHaveCount(0);
   await expect(page.locator('.app-flag')).toHaveAttribute('alt', 'Drapeau à deviner');
@@ -14,6 +15,8 @@ test('une bonne réponse valide le pays et révèle anecdote et carte', async ({
   await expect(page.locator('.app-option.fd-button--success')).toContainText(nameOf(code));
   await expect(page.locator('fd-alert')).toHaveCount(0);
   await expect(page.locator('.app-stats')).toContainText('Score 1 / 1');
+  await expect(page.locator('.app-mnemonic-panel .fd-card__text')).not.toBeEmpty();
+  await expect(page.locator('.app-fun-fact .fd-card__text')).not.toBeEmpty();
   await expect(page.locator('.app-fun-fact .fd-card__text')).not.toBeEmpty();
   const iframe = page.locator('iframe.app-map');
   await expect(iframe).toBeVisible();
@@ -56,6 +59,7 @@ test('Drapeau suivant pose une nouvelle question sans réponse ni carte', async 
 
   await expect(page.locator('.app-flag')).not.toHaveAttribute('src', `flags/4x3/${first}.svg`);
   await expect(page.locator('iframe')).toHaveCount(0);
+  await expect(page.locator('.app-mnemonic-panel')).toHaveCount(0);
   await expect(page.locator('.app-fun-fact')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Drapeau suivant' })).toHaveCount(0);
   await expect(page.locator('.app-option')).toHaveCount(4);
@@ -74,8 +78,11 @@ test('le clavier suffit : répondre, puis passer au drapeau suivant', async ({ p
   await openQuiz(page);
   const first = await currentCode(page);
 
-  // Le premier arrêt de tabulation est le sélecteur de thème, puis les 4 propositions.
+  // Arrêts de tabulation : le lien vers le quiz des capitales, le sélecteur de thème, puis les 4 propositions.
   await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Quiz des capitales' })).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('switch', { name: 'Thème nuit' })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.locator('.app-option').first()).toBeFocused();
   await page.keyboard.press('Enter');
@@ -103,6 +110,59 @@ test('la bascule de thème pose data-theme="dark" sur <html>', async ({ page }) 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
+
+test('le lien du quiz des capitales mène à capitals-quizz.phamelin.fr', async ({ page }) => {
+  await openQuiz(page);
+  const link = page.getByRole('navigation', { name: 'Autres quiz' }).getByRole('link', {
+    name: 'Quiz des capitales',
+  });
+  await expect(link).toHaveAttribute('href', 'https://capitals-quizz.phamelin.fr');
+});
+
+test('le pied de page renvoie au portfolio, sur l’ancre projects', async ({ page }) => {
+  await openQuiz(page);
+  const footer = page.getByRole('contentinfo');
+  await expect(footer).toContainText('Vous voulez en voir plus ? Visitez mon portfolio');
+  await expect(footer.getByRole('link', { name: 'portfolio' })).toHaveAttribute(
+    'href',
+    'https://phamelin.fr/#projects',
+  );
+  // Le pied de page est tout en bas de la page, sous le contenu.
+  const main = (await page.locator('main').boundingBox())!;
+  const box = (await footer.boundingBox())!;
+  expect(box.y).toBeGreaterThanOrEqual(main.y + main.height - 1);
+});
+
+test('astuce et anecdote ont ensemble la hauteur de la carte', async ({ page }) => {
+  await openQuiz(page);
+  await answer(page, true);
+  await expect(page.locator('iframe.app-map')).toBeVisible();
+  const box = async (selector: string) => (await page.locator(selector).boundingBox())!;
+  const [hints, map, mnemonic, funFact] = [
+    await box('.app-hints'),
+    await box('.app-map-panel'),
+    await box('.app-mnemonic-panel'),
+    await box('.app-fun-fact'),
+  ];
+  expect(Math.abs(hints.height - map.height)).toBeLessThanOrEqual(1);
+  expect(Math.abs(hints.y - map.y)).toBeLessThanOrEqual(1);
+  // Empilés, les deux cadres de gauche vont du haut au bas de la carte, sans trou ni débordement.
+  expect(Math.abs(mnemonic.y - map.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(funFact.y + funFact.height - (map.y + map.height))).toBeLessThanOrEqual(1);
+  expect(mnemonic.y + mnemonic.height).toBeLessThanOrEqual(funFact.y);
+});
+
+test('Drapeau suivant est aligné en bas du cadre du drapeau', async ({ page }) => {
+  await openQuiz(page);
+  await answer(page, true);
+  const flag = (await page.locator('.app-flag-card .fd-card').boundingBox())!;
+  const next = (await page.getByRole('button', { name: 'Drapeau suivant' }).boundingBox())!;
+  const options = (await page.locator('.app-options').boundingBox())!;
+  // Le bas du bouton rejoint le bas du drapeau, et les réponses restent en haut.
+  expect(Math.abs(next.y + next.height - (flag.y + flag.height))).toBeLessThanOrEqual(1);
+  expect(options.y).toBeLessThanOrEqual(flag.y + 1);
+  expect(next.y).toBeGreaterThan(options.y + options.height);
 });
 
 test('les 4 propositions tiennent sur un écran de téléphone', async ({ page }) => {

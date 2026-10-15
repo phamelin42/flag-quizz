@@ -11,7 +11,12 @@
       <fd-badge>Record {{ quiz.bestStreak() }}</fd-badge>
     </li>
   </ul>
-  <fd-switch [checked]="isDark()" (checkedChange)="setDark($event)">Thème nuit</fd-switch>
+  <div class="app-tools">
+    <nav aria-label="Autres quiz">
+      <a fdLink href="https://capitals-quizz.phamelin.fr">Quiz des capitales</a>
+    </nav>
+    <fd-switch [checked]="isDark()" (checkedChange)="setDark($event)">Thème nuit</fd-switch>
+  </div>
 </header>
 
 <main class="app-main">
@@ -20,11 +25,21 @@
     <app-answer-options />
   </section>
 
-  <!-- Rien ne s'affiche avant la réponse : l'anecdote et la carte donneraient la solution. -->
+  <!-- Rien ne s'affiche avant la réponse : l'astuce, l'anecdote et la carte donneraient la solution. -->
   @if (quiz.isAnswered()) {
     <div class="app-bottom">
-      <app-fun-fact [country]="quiz.question().country" />
+      <div class="app-hints">
+        <app-mnemonic-panel [country]="quiz.question().country" />
+        <app-fun-fact [country]="quiz.question().country" />
+      </div>
       <app-map-panel [country]="quiz.question().country" />
     </div>
   }
 </main>
+
+<footer class="app-footer">
+  <p>
+    Vous voulez en voir plus ? Visitez mon
+    <a fdLink href="https://phamelin.fr/#projects">portfolio</a>
+  </p>
+</footer>

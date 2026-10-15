@@ -1,5 +1,9 @@
+/* Le cadre suit la hauteur de la rangée : les réponses s'alignent sur lui (voir answer-options.scss). */
 .app-flag-card {
-  display: block;
+  display: flex;
+}
+.app-flag-card .fd-card {
+  flex: 1;
 }
 .app-flag {
   display: block;

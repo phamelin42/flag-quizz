@@ -1,5 +1,6 @@
 import { Component, computed, inject, ViewEncapsulation } from '@angular/core';
-import { FdBadge, FdSwitch, FdThemeService } from 'fuda';
+import { FdBadge, FdLink, FdSwitch, FdThemeService } from 'fuda';
+import { MnemonicPanel } from './mnemonic-panel/mnemonic-panel';
 import { AnswerOptions } from './answer-options/answer-options';
 import { FlagCard } from './flag-card/flag-card';
 import { FunFact } from './fun-fact/fun-fact';
@@ -8,7 +9,7 @@ import { QuizService } from './quiz/quiz.service';
 
 @Component({
   selector: 'app-root',
-  imports: [AnswerOptions, FdBadge, FdSwitch, FlagCard, FunFact, MapPanel],
+  imports: [AnswerOptions, FdBadge, FdLink, FdSwitch, FlagCard, FunFact, MapPanel, MnemonicPanel],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   encapsulation: ViewEncapsulation.None,
