@@ -11,87 +11,88 @@ export const OCEANIA: readonly Country[] = [
   {
     code: 'fj',
     mnemonic:
-      'Un fond bleu clair avec l’Union Jack en haut à gauche et un blason à droite. Tuvalu a le même bleu avec des étoiles.',
+      'Un lagon bleu clair avec l’Union Jack comme un pavillon, et un blason à droite. Tuvalu a le même bleu avec des étoiles.',
     funFact:
       'Le blason montre un lion, des cannes à sucre, un cocotier, des bananes et une colombe. Fidji est un archipel d’environ 330 îles.',
   },
   {
     code: 'ki',
     mnemonic:
-      'Un oiseau de mer et un soleil levant jaunes sur du rouge, au-dessus de trois vagues bleues et blanches.',
+      'Le soleil se lève sur Kiribati avant presque partout ailleurs : un soleil levant et une frégate au-dessus de trois vagues.',
     funFact:
       'La frégate est un oiseau de mer. Les trois bandes ondulées représentent les trois groupes d’îles : Gilbert, Phénix et Line.',
   },
   {
     code: 'mh',
     mnemonic:
-      'Deux diagonales, orange et blanche, qui partent du coin en bas à gauche, avec une grande étoile dans le coin en haut.',
+      'Une rose des vents dans le coin, pour un peuple de navigateurs, avec deux rayons, orange et blanc, qui montent vers elle.',
     funFact:
       'Les 24 branches rappellent les 24 municipalités. Les deux diagonales évoquent les deux chaînes d’îles, Ratak et Ralik.',
   },
   {
     code: 'fm',
-    mnemonic: 'Un fond bleu clair avec quatre étoiles blanches disposées en losange.',
+    mnemonic:
+      'Quatre étoiles en losange comme une boussole sur le lagon, une pour chacun des quatre États.',
     funFact: 'Les quatre étoiles représentent les quatre États : Chuuk, Kosrae, Pohnpei et Yap.',
   },
   {
     code: 'nr',
     mnemonic:
-      'Une fine bande jaune, l’équateur, avec juste en dessous une étoile blanche, sur du bleu.',
+      'Une carte : la ligne jaune est l’équateur, et l’étoile blanche juste en dessous est l’île de Nauru, posée juste au sud.',
     funFact:
       'La bande jaune est l’équateur, tout près de l’île, et l’étoile à douze branches rappelle les douze tribus. Elle est placée sous la ligne, car l’île se trouve juste au sud de l’équateur.',
   },
   {
     code: 'nz',
     mnemonic:
-      'Quatre petites étoiles rouges bordées de blanc : pas de grosse étoile comme en Australie, le petit pays a les petites étoiles.',
+      'Pas de grosse étoile ici : l’Australie a la grosse étoile pour la grosse île, la Nouvelle-Zélande n’a que quatre petites étoiles rouges.',
     funFact:
       'Les quatre étoiles forment la Croix du Sud. En 2015-2016, un référendum a proposé de changer le drapeau. Les Néo-Zélandais ont choisi de le garder.',
   },
   {
     code: 'pw',
     mnemonic:
-      'Une pleine lune jaune sur du bleu clair, décalée vers la hampe. Le Japon est blanc, avec un soleil rouge centré.',
+      'La pleine lune jaune qui se lève au-dessus du lagon, un peu décalée vers le mât. Le Japon a un soleil au centre.',
     funFact:
       'Le disque est la pleine lune. Il est décalé, et non centré comme sur le drapeau japonais, car c’est la lune et non le soleil.',
   },
   {
     code: 'pg',
     mnemonic:
-      'Une diagonale : en haut à droite un oiseau de paradis doré sur du rouge, en bas à gauche cinq étoiles blanches sur du noir.',
+      'Le jour en haut à droite (l’oiseau de paradis sur le rouge), la nuit en bas à gauche (les étoiles sur le noir), séparés par une diagonale.',
     funFact:
       'L’oiseau est un oiseau de paradis. Le drapeau a été dessiné en 1971 par Susan Karike, alors âgée de 15 ans.',
   },
   {
     code: 'ws',
     mnemonic:
-      'Un fond rouge avec un carré bleu en haut à gauche portant cinq étoiles blanches, la Croix du Sud.',
+      'La nuit dans le coin d’un drapeau rouge : un carré bleu avec cinq étoiles blanches, comme une constellation sur un oreiller.',
     funFact:
       'Les cinq étoiles représentent la Croix du Sud. Le bleu évoque la liberté, le rouge le courage et le blanc la pureté.',
   },
   {
     code: 'sb',
-    mnemonic:
-      'Une fine diagonale jaune entre un triangle bleu portant cinq étoiles et un triangle vert.',
+    mnemonic: 'Un chemin jaune entre la mer bleue, avec ses cinq étoiles, et la terre verte.',
     funFact: 'Les cinq étoiles représentent les cinq groupes d’îles principaux du pays.',
   },
   {
     code: 'to',
-    mnemonic: 'Un fond rouge avec un carré blanc en haut à gauche qui contient une croix rouge.',
+    mnemonic:
+      'Une croix rouge sur du blanc, comme sur une trousse de secours, dans un drapeau tout rouge. La Suisse est l’inverse.',
     funFact:
       'Adopté en 1875, il est inscrit dans la constitution : on ne peut pas le modifier. La croix rouge évoque le christianisme.',
   },
   {
     code: 'tv',
     mnemonic:
-      'Un fond bleu clair avec l’Union Jack en haut à gauche et neuf étoiles jaunes à droite. Fidji a un blason à la place.',
+      'Les neuf étoiles sont posées comme les neuf îles sur la carte. Le même bleu clair qu’à Fidji, mais sans blason.',
     funFact:
       'Les neuf étoiles représentent les neuf îles de l’archipel. Leur disposition reproduit la carte du pays.',
   },
   {
     code: 'vu',
     mnemonic:
-      'Un grand « Y » couché noir bordé de jaune, avec un triangle noir portant une défense de sanglier, rouge en haut et vert en bas.',
+      'L’archipel a la forme d’un Y : le Y couché du drapeau en reprend le tracé, comme une carte posée sur le drapeau, rouge au-dessus et vert au-dessous.',
     funFact:
       'Le « Y » évoque la disposition des îles. L’emblème est une défense de sanglier entourée de feuilles de namele, symbole de prospérité.',
   },

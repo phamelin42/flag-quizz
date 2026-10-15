@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { FUN_FACTS_EN } from '../src/app/data/fun-facts.en';
+import { MNEMONICS_EN } from '../src/app/data/mnemonics.en';
 import { answer, currentCode, nameOf, openQuiz } from './helpers';
 
 test('une bonne réponse valide le pays et révèle astuce, anecdote et carte', async ({ page }) => {
@@ -217,7 +219,6 @@ test.describe('version anglaise', () => {
     await expect(page.locator('.app-flag')).toHaveAttribute('alt', `Flag of ${nameOf(code, 'en')}`);
     await expect(page.getByText('Did you know?')).toBeVisible();
     await expect(page.locator('.app-mnemonic-panel')).toContainText('Tip');
-    await expect(page.locator('.app-mnemonic-panel')).not.toContainText(/[éèàç]/);
     await expect(page.getByRole('link', { name: 'Capitals quiz' })).toHaveAttribute(
       'href',
       'https://capitals-quizz.phamelin.fr',
@@ -225,7 +226,9 @@ test.describe('version anglaise', () => {
     await expect(page.getByRole('contentinfo')).toContainText(
       'Want to see more? Visit my portfolio',
     );
-    await expect(page.locator('.app-fun-fact')).not.toContainText(/[éèàç]/);
+    // Le texte exact, pas une lettre accentuée : « Barthélemy », « Tomé » ou « José » en ont légitimement.
+    await expect(page.locator('.app-mnemonic-panel .fd-card__text')).toHaveText(MNEMONICS_EN[code]);
+    await expect(page.locator('.app-fun-fact .fd-card__text')).toHaveText(FUN_FACTS_EN[code]);
     const src = new URL((await page.locator('iframe.app-map').getAttribute('src'))!);
     expect(src.searchParams.get('q')).toBe(nameOf(code, 'en'));
     expect(src.searchParams.get('hl')).toBe('en');
