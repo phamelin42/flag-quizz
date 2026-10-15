@@ -98,9 +98,7 @@ test('le clavier suffit : répondre, puis passer au drapeau suivant', async ({ p
   await openQuiz(page);
   const first = await currentCode(page);
 
-  // Arrêts de tabulation : le lien vers le quiz des capitales, le sélecteur de thème, le lien de langue, puis les 4 propositions.
-  await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'Quiz des capitales' })).toBeFocused();
+  // Arrêts de tabulation : le sélecteur de thème, le lien de langue, puis les 4 propositions.
   await page.keyboard.press('Tab');
   await expect(page.getByRole('switch', { name: 'Thème nuit' })).toBeFocused();
   await page.keyboard.press('Tab');
@@ -134,11 +132,26 @@ test('la bascule de thème pose data-theme="dark" sur <html>', async ({ page }) 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });
 
-test('le lien du quiz des capitales mène à capitals-quizz.phamelin.fr', async ({ page }) => {
+test('le cadre astuce propose une meilleure astuce, seulement après la réponse', async ({
+  page,
+}) => {
   await openQuiz(page);
-  const link = page.getByRole('navigation', { name: 'Autres quiz' }).getByRole('link', {
-    name: 'Quiz des capitales',
+  await expect(page.getByRole('link', { name: 'Proposer une meilleure astuce' })).toHaveCount(0);
+  await answer(page, true);
+  const link = page.locator('.app-mnemonic-panel').getByRole('link', {
+    name: 'Proposer une meilleure astuce',
   });
+  const href = new URL((await link.getAttribute('href'))!);
+  expect(href.origin + href.pathname).toBe('https://github.com/phamelin42/flag-quizz/issues/new');
+  expect(href.searchParams.get('template')).toBe('astuce.yml');
+});
+
+test('le pied de page renvoie vers le quiz des capitales', async ({ page }) => {
+  await openQuiz(page);
+  const link = page
+    .getByRole('contentinfo')
+    .getByRole('navigation', { name: 'Autres quiz' })
+    .getByRole('link', { name: 'Quiz des capitales' });
   await expect(link).toHaveAttribute('href', 'https://capitals-quizz.phamelin.fr');
 });
 

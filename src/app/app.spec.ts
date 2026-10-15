@@ -159,10 +159,24 @@ describe('App', () => {
     el.remove();
   });
 
-  it('propose un lien vers le quiz des capitales', async () => {
+  it('propose, dans le cadre astuce après la réponse, de proposer une meilleure astuce', async () => {
+    const { el, quiz, optionFor, settle } = await setup();
+    expect(el.querySelector('.app-suggest-tip')).toBeNull();
+    optionFor(quiz.question().country.code).click();
+    await settle();
+    const link = el.querySelector<HTMLAnchorElement>('.app-mnemonic-panel a.app-suggest-tip')!;
+    expect(link.textContent!.trim()).toBe('Proposer une meilleure astuce');
+    const url = new URL(link.href);
+    expect(url.pathname).toBe('/phamelin42/flag-quizz/issues/new');
+    expect(url.searchParams.get('template')).toBe('astuce.yml');
+    expect(link.target).toBe('_blank');
+    expect(link.rel).toContain('noopener');
+  });
+
+  it('propose en pied de page un lien vers le quiz des capitales', async () => {
     const { el } = await setup();
     const link = el.querySelector<HTMLAnchorElement>(
-      'nav a[href="https://capitals-quizz.phamelin.fr"]',
+      'footer nav a[href="https://capitals-quizz.phamelin.fr"]',
     )!;
     expect(link.textContent!.trim()).toBe('Quiz des capitales');
     expect(link.closest('nav')!.getAttribute('aria-label')).toBe('Autres quiz');
@@ -170,11 +184,11 @@ describe('App', () => {
 
   it('propose en bas de page un lien vers le portfolio, ancre projects', async () => {
     const { el } = await setup();
-    const footer = el.querySelector('footer')!;
-    expect(footer.textContent!.replace(/\s+/g, ' ').trim()).toBe(
+    const line = el.querySelector('footer .app-footer-line')!;
+    expect(line.textContent!.replace(/\s+/g, ' ').trim()).toBe(
       'Vous voulez en voir plus ? Visitez mon portfolio',
     );
-    const link = footer.querySelector<HTMLAnchorElement>('a')!;
+    const link = line.querySelector<HTMLAnchorElement>('a')!;
     expect(link.textContent!.trim()).toBe('portfolio');
     expect(link.getAttribute('href')).toBe('https://phamelin.fr/#projects');
   });
@@ -237,15 +251,15 @@ describe('App', () => {
       link(el).click();
       await settle();
 
-      const capitals = el.querySelector<HTMLAnchorElement>('nav a')!;
+      const capitals = el.querySelector<HTMLAnchorElement>('footer nav a')!;
       expect(capitals.textContent!.trim()).toBe('Capitals quiz');
       expect(capitals.getAttribute('href')).toBe('https://capitals-quizz.phamelin.fr');
       expect(capitals.closest('nav')!.getAttribute('aria-label')).toBe('Other quizzes');
-      const footer = el.querySelector('footer')!;
-      expect(footer.textContent!.replace(/\s+/g, ' ').trim()).toBe(
+      const line = el.querySelector('footer .app-footer-line')!;
+      expect(line.textContent!.replace(/\s+/g, ' ').trim()).toBe(
         'Want to see more? Visit my portfolio',
       );
-      expect(footer.querySelector('a')!.getAttribute('href')).toBe('https://phamelin.fr/#projects');
+      expect(line.querySelector('a')!.getAttribute('href')).toBe('https://phamelin.fr/#projects');
     });
 
     it('garde le nom du pays secret en anglais avant la réponse', async () => {

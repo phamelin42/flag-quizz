@@ -5,7 +5,7 @@ Un quiz de drapeaux en Angular, construit avec le design system [Fuda](https://g
 - Un drapeau s'affiche, quatre pays sont proposés, un seul est le bon.
 - Un clic valide ou non la réponse. Le score, la série en cours et le record s'affichent en haut.
 - Une fois la réponse donnée apparaissent **un moyen mnémotechnique** pour reconnaître le drapeau (une association avec un objet, un plat, un sport ou la forme du pays, ou la différence avec un drapeau jumeau) et **une anecdote**, en bas à gauche, ainsi que **la carte Google Maps** du pays, en bas à droite. Avant, aucun de ces encarts n'est affiché.
-- Un lien en en-tête mène au [quiz des capitales](https://capitals-quizz.phamelin.fr), un autre en pied de page à mon [portfolio](https://phamelin.fr/#projects).
+- Le pied de page renvoie vers le [quiz des capitales](https://capitals-quizz.phamelin.fr) et vers mon [portfolio](https://phamelin.fr/#projects).
 - Les 195 pays (193 membres de l'ONU, le Vatican et la Palestine) sont tirés dans un ordre mélangé, sans répétition jusqu'à épuisement, puis le paquet est refait.
 - Deux langues : le français à la racine (`/`), l'anglais sous `/en/`. Un lien dans l'en-tête bascule sans recharger : la partie en cours continue et l'adresse suit (retour arrière compris).
 - Thème Jour par défaut, thème Nuit au choix du joueur. Clavier complet, WCAG 2.2 AA vérifié par axe.
@@ -37,6 +37,10 @@ Fuda n'est pas publiée sur npm (le paquet `fuda` du registre est un autre proje
 ```
 
 Le script `prepare` de Fuda construit la bibliothèque à l'installation, ce qui rend `npm ci` plus long. Pour passer à une version plus récente de Fuda : `npm install fuda`. Cette commande réécrit l'adresse en `github:…` et le lockfile en `git+ssh://…`, qui échoue sans clé SSH (en CI, sur Vercel) : **remettre `git+https://github.com/…` à la place dans `package.json` et dans `package-lock.json`** (la clé `fuda` des dépendances et le champ `resolved`), puis vérifier avec `rm -rf node_modules/fuda && npm ci`.
+
+## Proposer une meilleure astuce
+
+Le cadre astuce a un lien « Proposer une meilleure astuce » : il ouvre un ticket GitHub pré-rempli (modèle `.github/ISSUE_TEMPLATE/astuce.yml`, étiquette `astuce`). Les tickets servent de stockage, sans serveur ni base de données. Chaque semaine, on relit les tickets ouverts, on garde ceux qui respectent la règle d’une astuce (voir `CLAUDE.md`), on les reporte dans `data/` et `mnemonics.en.ts`, puis on ferme le ticket.
 
 ## La carte Google Maps
 

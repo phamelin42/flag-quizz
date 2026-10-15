@@ -32,7 +32,7 @@ Une tâche est terminée quand `lint`, `typecheck`, `test` et `build` sont verts
 - Le verdict n'a pas d'encart. La bonne réponse passe en bouton `success` (vert) avec une coche, le mauvais choix en `danger` avec une croix, et un texte masqué (`fd-sr`, `aria-live`) l'annonce : il ne repose jamais sur la couleur seule.
 - « Drapeau suivant » est un bouton secondaire (le style par défaut de Fuda), pas `primary`.
 - **Mise en page** (écran large) : les réponses prennent la hauteur du drapeau et « Drapeau suivant » descend en bas de cette colonne (`margin-top: auto`). En bas de page, l'astuce et l'anecdote sont empilées à gauche et ont ensemble la hauteur de la carte à droite : la carte s'étire avec la colonne, elle n'a pas de hauteur fixe. `e2e/quiz.spec.ts` mesure ces alignements.
-- Liens externes, traduits par `Messages` mais vers les mêmes adresses dans les deux langues : « Quiz des capitales » (`https://capitals-quizz.phamelin.fr`) dans l'en-tête, et « portfolio » (`https://phamelin.fr/#projects`) dans le pied de page. Ce sont des `a[fdLink]` ; le lien des capitales est un arrêt de tabulation de plus, avant le sélecteur de thème et le lien de langue.
+- Liens externes, traduits par `Messages` mais vers les mêmes adresses dans les deux langues : « Quiz des capitales » (`https://capitals-quizz.phamelin.fr`) et « portfolio » (`https://phamelin.fr/#projects`), tous deux dans le pied de page (comme le lien vers ce quiz dans celui de capital-quizz). Ce sont des `a[fdLink]` ; l'en-tête n'a que les statistiques, le sélecteur de thème et le lien de langue.
 - Après une réponse, le focus va sur « Drapeau suivant » ; après « suivant », sur la première proposition.
 - L'URL de la carte est construite uniquement depuis `countryName(code)`, jamais depuis une saisie : c'est ce qui justifie `bypassSecurityTrustResourceUrl` dans `map-panel.ts`.
 - **Tout texte visible passe par `LocaleService`** (`i18n.messages()`, `countryName`, `funFact`) : jamais de chaîne en dur dans un gabarit. Le français est à la racine, l'anglais sous `/en/` ; le même jeu de règles vaut dans les deux langues (rien ne donne la réponse avant le clic, verdict jamais par la couleur seule).
@@ -62,6 +62,8 @@ Uniquement des custom properties issues des tokens Fuda (couleur, espacement, ra
 Voir `README.md` : installée depuis git (`prepare` construit la lib). Elle suit la branche `main` de Fuda, au commit figé par `package-lock.json`. Après `npm install fuda`, remettre `git+https` à la place de `github:` et de `git+ssh` (package.json et lockfile : voir `README.md`). Si une icône, une variante ou un composant manque, on l'ajoute dans Fuda, pas ici : le bouton `success` (vert) et le token `tokiwa-press` viennent de là.
 
 ## Contenu
+
+Le cadre astuce propose « Proposer une meilleure astuce » (`suggest-tip-url.ts`), un ticket GitHub pré-rempli via `.github/ISSUE_TEMPLATE/astuce.yml`. C'est le seul stockage des propositions : on les relit chaque semaine et on ne retient que celles qui sont de vraies astuces (associer ou comparer, 200 caractères au plus, détails vérifiés sur le drapeau). Le lien n'existe qu'après la réponse, comme tout le cadre.
 
 Les astuces et les anecdotes sont rédigées à la main, en français dans la fiche et en anglais dans `mnemonics.en.ts` et `fun-facts.en.ts`. Les vérifier avant d'en ajouter : un fait douteux ne vaut rien.
 

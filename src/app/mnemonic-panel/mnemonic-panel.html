@@ -3,4 +3,13 @@
   <span slot="title">{{ i18n.messages().mnemonicTitle }}</span>
   <span slot="meta">{{ name() }}</span>
   {{ mnemonic() }}
+  <a
+    slot="actions"
+    fdLink
+    class="app-suggest-tip"
+    target="_blank"
+    rel="noopener noreferrer"
+    [href]="suggestUrl()"
+    >{{ i18n.messages().suggestTip }}</a
+  >
 </article>

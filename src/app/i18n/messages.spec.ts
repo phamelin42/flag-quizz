@@ -36,5 +36,7 @@ describe('MESSAGES', () => {
     expect(MESSAGES.fr.capitalsQuiz).toBe('Quiz des capitales');
     expect(MESSAGES.en.portfolioPrompt).toBe('Want to see more? Visit my');
     expect(MESSAGES.en.capitalsQuiz).toBe('Capitals quiz');
+    expect(MESSAGES.fr.suggestTip).toBe('Proposer une meilleure astuce');
+    expect(MESSAGES.en.suggestTip).toBe('Suggest a better tip');
   });
 });

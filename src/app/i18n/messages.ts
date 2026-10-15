@@ -19,6 +19,8 @@ export interface Messages {
   readonly flagOf: (countryName: string) => string;
   readonly hintBadge: string;
   readonly mnemonicTitle: string;
+  /** Lien du cadre astuce : ouvre un ticket GitHub pré-rempli pour proposer une autre astuce. */
+  readonly suggestTip: string;
   readonly didYouKnow: string;
   readonly factTitle: string;
   readonly mapTitle: string;
@@ -51,6 +53,7 @@ const fr: Messages = {
   flagOf: (name) => `Drapeau : ${name}`,
   hintBadge: 'Astuce',
   mnemonicTitle: 'Comment le reconnaître',
+  suggestTip: 'Proposer une meilleure astuce',
   didYouKnow: 'Le saviez-vous ?',
   factTitle: 'Un bout d’histoire',
   mapTitle: 'Où se trouve ce pays ?',
@@ -80,6 +83,7 @@ const en: Messages = {
   flagOf: (name) => `Flag of ${name}`,
   hintBadge: 'Tip',
   mnemonicTitle: 'How to recognize it',
+  suggestTip: 'Suggest a better tip',
   didYouKnow: 'Did you know?',
   factTitle: 'A bit of history',
   mapTitle: 'Where is this country?',
